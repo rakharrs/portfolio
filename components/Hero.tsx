@@ -26,7 +26,7 @@ export const Hero: React.FC = () => {
 
                     <div className="mx-auto max-w-[900px] text-gray-400 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed ">
                         <TextType
-
+                            loop={false}
                             text={["Hi, I am Rodolphe Yoann RAKOTO-HARISOA, a computer science student & full stack developper passionate about data science, web application and game development. Contact me help you craft efficient and scalable solutions with a touch of creativity."]}
                             typingSpeed={10}
                             // deletingSpeed={80}
