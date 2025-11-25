@@ -4,6 +4,7 @@ import { Canvas } from "@react-three/fiber";
 import { Physics, RigidBody } from "@react-three/rapier";
 import { Suspense } from "react";
 import * as THREE from "three";
+import Thruster from "./Thruster";
 
 // creating a simple spaceship model with three
 function Spaceship() {
@@ -18,6 +19,7 @@ function Spaceship() {
             colliders="hull"
         >
             <primitive object={scene} scale={0.1} position={[0, -2, 0]} rotation={[1, Math.PI, 0]} />
+            <Thruster position={[0, -2.4, 0]} scale={0.4} />
         </RigidBody>
     )
 }
