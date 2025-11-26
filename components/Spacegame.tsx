@@ -9,7 +9,7 @@ import { GameLoader } from "@/app/spaceship/GameLoader";
 import { cn } from "@/lib/utils";
 import ShakeCamera from "./effects/CameraShake";
 
-useGLTF.preload("/models/spaceship2.glb");
+useGLTF.preload("/models/spaceship.glb");
 type Vec3 = [number, number, number];
 interface MeteorProps {
     id: string;
@@ -69,7 +69,7 @@ function Meteor({ id, position, scale, speed, pause, gameOver, onHit, onDespawn 
 }
 
 function Spaceship({ gameOver, pause, hit }: { gameOver: boolean, pause: boolean, hit: boolean }) {
-    const gltf = useGLTF("/models/spaceship2.glb");
+    const gltf = useGLTF("/models/spaceship.glb");
     const scene = gltf.scene;
     const rb = useRef<RapierRigidBody>(null);
 
