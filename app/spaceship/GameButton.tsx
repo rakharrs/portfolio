@@ -5,21 +5,8 @@ import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 
 export default function GameMusic() {
-    const [isPlaying, setIsPlaying] = useState<boolean>(true);
+    const [isPlaying, setIsPlaying] = useState<boolean>(false);
     const audioRef = useRef<HTMLAudioElement | null>(null);
-
-    
-
-    // Auto-start after first interaction (mobile-friendly)
-    useEffect(() => {
-        const startMusic = () => {
-            audioRef.current?.play().catch(() => { });
-            window.removeEventListener("touchstart", startMusic);
-            window.removeEventListener("click", startMusic);
-        };
-        window.addEventListener("touchstart", startMusic);
-        window.addEventListener("click", startMusic);
-    }, []);
 
 
     function handleMusicButton() {
