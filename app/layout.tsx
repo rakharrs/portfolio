@@ -5,7 +5,7 @@ import TargetCursor from "@/components/effects/TargetCursor";
 import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
-  title: "Yoann's portfolio",
+  title: "portfolio - Rodolphe Yoann",
   description: "Yoann's portfolio website",
 };
 
