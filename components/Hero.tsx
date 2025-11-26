@@ -1,7 +1,7 @@
 
 
 import React from "react";
-import { Gamepad2, Rocket, Code2 } from "lucide-react";
+import { Gamepad2, Rocket, Code2, Coffee, Boxes, Cylinder, BrainCircuit, CircuitBoardIcon } from "lucide-react";
 import DecryptedText from "./effects/DecryptedText";
 import { Separator } from "./ui/separator";
 import TextType from "./effects/TextType";
@@ -11,12 +11,13 @@ const skills = [
     { label: "Full-Stack Dev", icon: <Code2 className="h-3 w-3" /> },
     { label: "Next.js & React", icon: <Rocket className="h-3 w-3" /> },
     { label: "Game Lover", icon: <Gamepad2 className="h-3 w-3" /> },
-    { label: "Java - Spring boot - Quarkus", icon: null },
-    { label: "PHP - Laravel", icon: null },
-    { label: "Python - Django - flask", icon: null },
-    { label: "SQL", icon: null },
+    { label: "Java - Spring boot - Quarkus", icon: <Coffee className="h-3 w-3" /> },
+    { label: "PHP - Laravel", icon: <Boxes className="h-3 w-3" /> },
+    { label: "Python", icon: null },
+    { label: "SQL", icon: <Cylinder className="h-3 w-3" /> },
     { label: "AI", icon: null },
     { label: "Git", icon: null },
+    { label: "Linux - Windows - MacOS", icon: null },
 ];
 
 export const Hero: React.FC = () => {
