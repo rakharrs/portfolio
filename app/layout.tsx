@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import "./fonts.css";
+import TargetCursor from "@/components/effects/TargetCursor";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -15,6 +16,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+        <TargetCursor
+
+          spinDuration={2}
+
+          hideDefaultCursor={true}
+
+          parallaxOn={true}
+
+        />
         {children}
       </body>
     </html>
