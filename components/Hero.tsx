@@ -1,77 +1,95 @@
 
-import React from 'react';
-import { ArrowRight } from 'lucide-react';
-import { Button } from './ui/button';
-import DecryptedText from './effects/DecryptedText';
-import { Separator } from './ui/separator';
-import TextType from './effects/TextType';
-import Link from 'next/link';
+
+import React from "react";
+import { Gamepad2, Rocket, Code2 } from "lucide-react";
+import DecryptedText from "./effects/DecryptedText";
+import { Separator } from "./ui/separator";
+import TextType from "./effects/TextType";
+import HeroButton from "./HeroButton";
+
+const skills = [
+    { label: "Full-Stack Dev", icon: <Code2 className="h-3 w-3" /> },
+    { label: "Next.js & React", icon: <Rocket className="h-3 w-3" /> },
+    { label: "Game Lover", icon: <Gamepad2 className="h-3 w-3" /> },
+    { label: "Java - Spring boot - Quarkus", icon: null },
+    { label: "PHP - Laravel", icon: null },
+    { label: "Python - Django - flask", icon: null },
+    { label: "SQL", icon: null },
+    { label: "Machine learning", icon: null },
+];
 
 export const Hero: React.FC = () => {
     return (
-        <div className="text-center relative flex flex-col items-center justify-center min-h-screen w-full overflow-hidden pt-16">
+        <div className="relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden pt-16 text-center">
 
-            <div className="relative z-10 container px-4 md:px-6 flex flex-col items-center gap-8">
+            <div className="relative z-10 container flex flex-col items-center gap-8 px-4 md:px-6">
+                <div className="space-y-6 max-w-3xl">
 
-                <div className="space-y-4 max-w-3xl">
-                    <h1 className="text-4xl font-bold font-departure tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl bg-clip-text text-transparent bg-gradient-to-r from-yellow-300 to-yellow-600">
+                    {/* Main title */}
+                    <h1 className="font-departure bg-gradient-to-r from-yellow-300 via-yellow-400 to-yellow-600 bg-clip-text text-4xl font-bold tracking-tighter text-transparent sm:text-5xl md:text-6xl lg:text-7xl">
                         <DecryptedText
-                            text='Rodolphe Yoann'
+                            text="Rodolphe Yoann"
                             sequential={true}
                             animateOn="view"
-
                         />
                     </h1>
 
-                    <Separator className='my-5 w-50' />
+                    <Separator className="mx-auto my-4 w-24 bg-yellow-500/60" />
 
-                    <div className="mx-auto max-w-[900px] text-gray-400 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed ">
+                    {/* Intro text */}
+                    <div className="mx-auto max-w-[900px] text-gray-400 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
                         <TextType
                             loop={false}
                             text={["Hi, I am Rodolphe Yoann RAKOTO-HARISOA"]}
                             typingSpeed={7}
-                            // deletingSpeed={80}
                             pauseDuration={-1}
                             showCursor={false}
                             cursorCharacter="|"
                         />
                         <TextType
                             loop={false}
-                            text={["A computer science student & full stack developper that loves training, experimenting and learning new skills. From web development to 3D programming, I enjoy creating interactive experiences and pushing the boundaries of technology."]}
+                            text={[
+                                "A computer science student & full stack developer that loves training, experimenting and learning new skills. From web development to 3D programming, I enjoy creating interactive experiences and pushing the boundaries of technology.",
+                            ]}
                             typingSpeed={7}
                             initialDelay={10}
-                            // deletingSpeed={80}
                             pauseDuration={-1}
                             showCursor={false}
                             cursorCharacter="|"
                         />
-                          <TextType
+                        <TextType
                             loop={false}
                             text={["Welcome to my portfolio!"]}
                             typingSpeed={7}
                             initialDelay={2000}
-                            // deletingSpeed={80}
                             pauseDuration={-1}
                             showCursor={false}
                             cursorCharacter="|"
                         />
-
                     </div>
-                    <div className="flex flex-col sm:flex-row gap-4 justify-center w-full">
-                        <a href={"/spaceship"}>
-                            <Button variant={"outline"} size="lg" className="cursor-target cursor-none text-white font-departure">
-                                ▷ Wanna play ?
-                            </Button>
-                        </a>
 
-                        <Button variant={"outline"} size="lg" className="cursor-target cursor-none text-white font-departure">
-                            See more <ArrowRight className="h-4 w-4" />
-                        </Button>
-
-
+                    {/* Skill badges */}
+                    <div className="mt-4 flex flex-wrap justify-center gap-2">
+                        {skills.map((skill) => (
+                            <div
+                                key={skill.label}
+                                className="cursor-target group inline-flex items-center gap-1 rounded-full border border-yellow-500/40 bg-black/60 px-3 py-1 text-xs text-yellow-100/90 backdrop-blur-sm transition hover:border-yellow-400 hover:bg-yellow-500/10 hover:text-yellow-300"
+                            >
+                                {skill.icon && (
+                                    <span className="translate-y-[0.5px] transition group-hover:scale-110">
+                                        {skill.icon}
+                                    </span>
+                                )}
+                                <span className="font-medium font-departure tracking-wide">
+                                    {skill.label}
+                                </span>
+                            </div>
+                        ))}
                     </div>
+
+                    <HeroButton />
+
                 </div>
-
             </div>
         </div>
     );
