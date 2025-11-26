@@ -5,6 +5,7 @@ import { Button } from './ui/button';
 import DecryptedText from './effects/DecryptedText';
 import { Separator } from './ui/separator';
 import TextType from './effects/TextType';
+import Link from 'next/link';
 
 export const Hero: React.FC = () => {
     return (
@@ -27,7 +28,7 @@ export const Hero: React.FC = () => {
                     <div className="mx-auto max-w-[900px] text-gray-400 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed ">
                         <TextType
                             loop={false}
-                            text={["Hi, I am Rodolphe Yoann RAKOTO-HARISOA, a computer science student & full stack developper passionate about data science, web application and game development. Contact me help you craft efficient and scalable solutions with a touch of creativity."]}
+                            text={["Hi, I am Rodolphe Yoann RAKOTO-HARISOA, a computer science student & full stack developper passionate about data science, web application and game development. Contact me to help you craft efficient and scalable solutions with a touch of creativity."]}
                             typingSpeed={10}
                             // deletingSpeed={80}
                             pauseDuration={-1}
@@ -38,13 +39,16 @@ export const Hero: React.FC = () => {
 
                     </div>
                     <div className="flex flex-col sm:flex-row gap-4 justify-end w-full">
-                        <Button variant={"outline"} size="lg" className="cursor-target cursor-none text-white font-departure">
-                            ▷ Wanna play ?
-                        </Button>
+                        <a href={"/spaceship"}>
+                            <Button variant={"outline"} size="lg" className="cursor-target cursor-none text-white font-departure">
+                                ▷ Wanna play ?
+                            </Button>
+                        </a>
+
                         <Button variant={"outline"} size="lg" className="cursor-target cursor-none text-white font-departure">
                             See more <ArrowRight className="h-4 w-4" />
                         </Button>
-                        
+
 
                     </div>
                 </div>

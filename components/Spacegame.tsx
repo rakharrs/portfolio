@@ -99,7 +99,7 @@ function Spaceship() {
         // orientation + bank + barrel roll
         rotationEuler.set(
             idlePitch,
-            -smoothedBank + extraRollZ + idleRoll,
+            -smoothedBank + 0 + idleRoll,
             -yaw,
         );
 
@@ -115,7 +115,6 @@ function Spaceship() {
             colliders="hull"
             lockRotations
         >
-            {/* Ensure straight start orientation for the model */}
             <primitive object={scene} scale={1.2} rotation={[1.8, Math.PI, 0]} />
             <Thruster position={[0, -1.6, 0]} scale={1} />
         </RigidBody>
