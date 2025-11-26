@@ -4,7 +4,7 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { Physics, RigidBody } from "@react-three/rapier";
 import { Suspense, useRef } from "react";
 import * as THREE from "three";
-// import Thruster from "./Thruster";
+import Thruster from "./Thruster";
 
 function Spaceship() {
     const gltf = useGLTF("/models/spaceship2.glb");
@@ -81,16 +81,25 @@ function Spaceship() {
             }
         }
 
+    
+        // Small bobbing on Y and tiny wobble on pitch/roll when idle
+        const time = state.clock.getElapsedTime();
+        // (sin(time*i) * o) with i as the speed freq and o the intensity of the rotation
+        const idleBob = Math.sin(time * 2) * 0.15 ;        // up/down  
+        const idlePitch = Math.sin(time * 1.3) * 0.05 ;    // nose up/down
+        const idleRoll = Math.sin(time * 1.7) * 0.1 ;     // small roll
+
+
         rb.current.setNextKinematicTranslation({
             x: smoothX,
-            y: -6,
+            y: -6 + idleBob,
             z: 0,
         });
 
         // orientation + bank + barrel roll
         rotationEuler.set(
-            0,
-            -smoothedBank + extraRollZ,
+            idlePitch,
+            -smoothedBank + extraRollZ + idleRoll,
             -yaw,
         );
 
@@ -108,7 +117,7 @@ function Spaceship() {
         >
             {/* Ensure straight start orientation for the model */}
             <primitive object={scene} scale={1.2} rotation={[1.8, Math.PI, 0]} />
-            {/* <Thruster position={[0, -0.01, 2.5]} scale={0.6} /> */}
+            <Thruster position={[0, -1.6, 0]} scale={1} />
         </RigidBody>
     );
 }
