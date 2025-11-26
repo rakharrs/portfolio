@@ -29,7 +29,7 @@ export const Hero: React.FC = () => {
                         <TextType
                             loop={false}
                             text={["Hi, I am Rodolphe Yoann RAKOTO-HARISOA, a computer science student & full stack developper passionate about data science, web application and game development. Contact me to help you craft efficient and scalable solutions with a touch of creativity."]}
-                            typingSpeed={50}
+                            typingSpeed={7}
                             // deletingSpeed={80}
                             pauseDuration={-1}
                             showCursor={false}
