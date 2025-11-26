@@ -6,7 +6,7 @@ import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
   title: "portfolio - Rodolphe Yoann",
-  description: "Yoann's portfolio website",
+  description: "RAKOTO-HARISOA Rodolphe Yoann's portfolio website",
 };
 
 export default function RootLayout({
