@@ -15,7 +15,8 @@ const skills = [
     { label: "PHP - Laravel", icon: null },
     { label: "Python - Django - flask", icon: null },
     { label: "SQL", icon: null },
-    { label: "Machine learning", icon: null },
+    { label: "AI", icon: null },
+    { label: "Git", icon: null },
 ];
 
 export const Hero: React.FC = () => {
