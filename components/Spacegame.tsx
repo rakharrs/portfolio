@@ -7,6 +7,7 @@ import * as THREE from "three";
 import Thruster from "./Thruster";
 import { GameLoader } from "@/app/spaceship/GameLoader";
 import { cn } from "@/lib/utils";
+import ShakeCamera from "./effects/CameraShake";
 
 useGLTF.preload("/models/spaceship2.glb");
 type Vec3 = [number, number, number];
@@ -16,6 +17,7 @@ interface MeteorProps {
     scale: number;
     speed: number;
     pause: boolean;
+    gameOver: boolean;
     onHit: () => void;
     onDespawn: (id: string) => void;
 }
@@ -27,7 +29,7 @@ interface MeteorData {
     speed: number;
 }
 
-function Meteor({ id, position, scale, speed, pause, onHit, onDespawn }: MeteorProps) {
+function Meteor({ id, position, scale, speed, pause, gameOver, onHit, onDespawn }: MeteorProps ) {
     const rigidBody = useRef<RapierRigidBody>(null);
 
     useFrame((state, delta) => {
@@ -46,13 +48,14 @@ function Meteor({ id, position, scale, speed, pause, onHit, onDespawn }: MeteorP
             ref={rigidBody}
             position={position}
             // KinematicVelocity allows us to set constant speed, 
-            type="kinematicVelocity"
-            linearVelocity={[0, pause ? 0 : -speed, 0]}
-            colliders="cuboid"
+            type="dynamic"
+            linearVelocity={[0, pause || gameOver ? 0 : -speed, 0]}
+            colliders="hull"
             // Important: Detect collision with the spaceship
             onCollisionEnter={({ other }) => {
-                onHit();
-
+                if (other.rigidBodyObject?.name === "spaceship") {
+                    onHit();
+                }
             }}
         >
             <Float speed={0} rotationIntensity={0} floatIntensity={0}>
@@ -61,11 +64,11 @@ function Meteor({ id, position, scale, speed, pause, onHit, onDespawn }: MeteorP
                     <meshStandardMaterial color="#555" flatShading={false} />
                 </mesh>
             </Float>
-        </RigidBody>
+        </RigidBody >
     );
 }
 
-function Spaceship({ gameOver, pause }: { gameOver: boolean, pause: boolean }) {
+function Spaceship({ gameOver, pause, hit }: { gameOver: boolean, pause: boolean, hit: boolean }) {
     const gltf = useGLTF("/models/spaceship2.glb");
     const scene = gltf.scene;
     const rb = useRef<RapierRigidBody>(null);
@@ -79,18 +82,57 @@ function Spaceship({ gameOver, pause }: { gameOver: boolean, pause: boolean }) {
     const rotationEuler = new THREE.Euler(0, 0, 0, "XYZ");
     const rotationQuaternion = new THREE.Quaternion();
 
+    // fly-away state (when hit)
+    const hasStartedFlyAway = useRef(false);
+    const flyVel = useRef(new THREE.Vector3());
+    const flyRotVel = useRef(new THREE.Vector3());
+
     function easeInOutQuad(t: number) {
         return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
     }
 
     useFrame((state, delta) => {
         if (!rb.current) return;
+        const currentTranslation = rb.current.translation();
 
+        if (hit) {
+            // init once
+            if (!hasStartedFlyAway.current) {
+                hasStartedFlyAway.current = true;
+
+                // give it some initial velocity & spin
+                const dir = currentTranslation.x >= 0 ? 1 : -1;
+                flyVel.current.set(5 * dir, 10, -5);            // sideways + up + into screen
+                flyRotVel.current.set(2, 4 * dir, 1);          // rotation speed
+            }
+
+            // fake gravity
+            flyVel.current.y -= 15 * delta;
+
+            const newX = currentTranslation.x + flyVel.current.x * delta;
+            const newY = currentTranslation.y + flyVel.current.y * delta;
+            const newZ = currentTranslation.z + flyVel.current.z * delta;
+
+            rb.current.setNextKinematicTranslation({ x: newX, y: newY, z: newZ });
+
+            // spin
+            rotationEuler.set(
+                rotationEuler.x + flyRotVel.current.x * delta,
+                rotationEuler.y + flyRotVel.current.y * delta,
+                rotationEuler.z + flyRotVel.current.z * delta
+            );
+            rotationQuaternion.setFromEuler(rotationEuler);
+            rb.current.setNextKinematicRotation(rotationQuaternion);
+
+            return; // stop normal control
+        }
         // FREEZE CONTROLS IF GAME OVER OR PAUSED
         if (gameOver || pause) return;
 
+
+
+
         const targetX = (state.pointer.x * state.viewport.width) / 2;
-        const currentTranslation = rb.current.translation();
         const smoothX = THREE.MathUtils.lerp(currentTranslation.x, targetX, 0.1);
 
         // Calculate velocity and tilt
@@ -157,7 +199,7 @@ function Spaceship({ gameOver, pause }: { gameOver: boolean, pause: boolean }) {
             name="spaceship"
             type="kinematicPosition"
             position={[0, -6, 0]}
-            colliders="cuboid"
+            colliders="hull"
         >
             <primitive object={scene} scale={1.2} rotation={[1.8, Math.PI, 0]} />
             <Thruster position={[0, -1.6, 0]} scale={1} />
@@ -165,13 +207,13 @@ function Spaceship({ gameOver, pause }: { gameOver: boolean, pause: boolean }) {
     );
 }
 
-function MeteorController({ setGameOver, gameOver, pause }: { setGameOver: (value: boolean) => void; gameOver: boolean; pause: boolean }) {
+function MeteorController({ setGameOver, gameOver, pause, onShipHit, setScore, score }: { setGameOver: (value: boolean) => void; gameOver: boolean; pause: boolean; onShipHit: () => void; setScore: (value: number) => void; score: number }) {
     const { viewport } = useThree();
     const [meteors, setMeteors] = useState<MeteorData[]>([]);
     const lastSpawnTime = useRef(0);
 
     // Seconds between spawns
-    const spawnRate = 1.0;
+    const spawnRate = 0.4;
 
     useFrame((state) => {
         if (gameOver || pause) return;
@@ -186,7 +228,7 @@ function MeteorController({ setGameOver, gameOver, pause }: { setGameOver: (valu
             const id = Math.random().toString();
             const x = (Math.random() - 0.5) * viewport.width; // Span full width
             const scale = 0.5 + Math.random() * 1.5; // Random size 0.5 to 2.0
-            const speed = 2 + Math.random() * 5; // Random speed
+            const speed = 2 + Math.random() * 50; // Random speed
 
             setMeteors((prev) => [
                 ...prev,
@@ -198,6 +240,7 @@ function MeteorController({ setGameOver, gameOver, pause }: { setGameOver: (valu
 
     const removeMeteor = (id: string) => {
         setMeteors((prev) => prev.filter((m) => m.id !== id));
+        setScore(score + 1);
     };
 
     return (
@@ -205,14 +248,14 @@ function MeteorController({ setGameOver, gameOver, pause }: { setGameOver: (valu
             {meteors.map((meteor) => (
                 <Meteor
                     pause={pause}
-
+                    gameOver={gameOver}
                     key={meteor.id}
                     id={meteor.id}
                     position={[meteor.x, 10, 0]} // Start above screen
                     scale={meteor.scale}
                     speed={meteor.speed}
                     onDespawn={removeMeteor}
-                    onHit={() => setGameOver(true)}
+                    onHit={onShipHit}
                 />
             ))}
         </>
@@ -223,11 +266,11 @@ function MeteorController({ setGameOver, gameOver, pause }: { setGameOver: (valu
 
 function GameOverOverlay({ onRestart }: { onRestart: () => void }) {
     return (
-        <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/70 z-10 text-white font-bold">
+        <div className="font-departure absolute inset-0 flex flex-col items-center justify-center bg-black/30 z-10 text-white font-bold">
             <h1 className="text-6xl mb-4 text-red-500">GAME OVER</h1>
             <button
                 onClick={onRestart}
-                className="px-6 py-3 bg-white text-black rounded hover:bg-gray-300 transition"
+                className="px-6 cursor-none py-3 bg-white text-black rounded hover:bg-gray-300 transition"
             >
                 Restart
             </button>
@@ -253,6 +296,8 @@ function GamePauseOverlay({ onResume }: { onResume: () => void }) {
 export function TestSpaceGame() {
     const [gameOver, setGameOver] = useState(false);
     const [pause, setPause] = useState(false);
+    const [shipHit, setShipHit] = useState(false);
+    const [score, setScore] = useState(0);
 
     const handleRestart = () => {
         window.location.reload();
@@ -271,48 +316,62 @@ export function TestSpaceGame() {
     })
 
     return (
-        <div className="w-full h-screen bg-[radial-gradient(ellipse_at_bottom,_#262626_0%,_#000_100%)]">
+        <>
+            <div className="absolute right-0 top-2 z-20 p-4 select-none">
+                <span className="font-departure text-white text-sm opacity-80">
+                    Score: {score}
+                </span>
+            </div>
+            <div className="w-full h-screen bg-[radial-gradient(ellipse_at_bottom,_#262626_0%,_#000_100%)]">
 
-            {gameOver && <GameOverOverlay onRestart={handleRestart} />}
-            {pause && <GamePauseOverlay onResume={handleResume} />}
+                {gameOver && <GameOverOverlay onRestart={handleRestart} />}
+                {pause && <GamePauseOverlay onResume={handleResume} />}
 
-            <GameLoader />
-            <Canvas shadows>
-                <Suspense fallback={null}>
-                    <OrthographicCamera
-                        makeDefault
-                        position={[0, 0, 10]}
-                        zoom={50}
-                        castShadow
-                    />
-                    <ambientLight intensity={0.7} />
-                    <directionalLight position={[0, 0, 1]} intensity={1} castShadow />
+                <GameLoader />
+                <Canvas shadows>
+                    <Suspense fallback={null}>
+                        <OrthographicCamera
+                            makeDefault
+                            position={[0, 0, 10]}
+                            zoom={50}
+                            castShadow
+                        />
+                        <ShakeCamera active={gameOver} />
+                        <ambientLight intensity={0.7} />
+                        <directionalLight position={[0, 0, 1]} intensity={1} castShadow />
 
-                    <Stars
-                        radius={100}
-                        depth={10}
-                        count={1000}
-                        factor={10}
-                        saturation={10}
-                        fade
-                        speed={2}
-                    />
-
-                    <Physics gravity={[0, 0, 0]} debug={true}>
-
-
-                        <Spaceship gameOver={gameOver} pause={pause} />
-
-                        <MeteorController
-                            gameOver={gameOver}
-                            setGameOver={setGameOver}
-                            pause={pause}
+                        <Stars
+                            radius={100}
+                            depth={10}
+                            count={1000}
+                            factor={10}
+                            saturation={10}
+                            fade
+                            speed={2}
                         />
 
-                    </Physics>
-                </Suspense>
-            </Canvas>
+                        <Physics gravity={[0, 0, 0]} debug={false}>
 
-        </div>
+
+                            <Spaceship gameOver={gameOver} pause={pause} hit={shipHit} />
+
+                            <MeteorController
+                                gameOver={gameOver}
+                                setGameOver={setGameOver}
+                                pause={pause}
+                                setScore={setScore}
+                                score={score}
+                                onShipHit={() => {
+                                    setShipHit(true);
+                                    setGameOver(true);
+                                }}
+                            />
+
+                        </Physics>
+                    </Suspense>
+                </Canvas>
+
+            </div>
+        </>
     );
 }
