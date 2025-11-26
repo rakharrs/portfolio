@@ -1,13 +1,30 @@
 "use client";
 import { OrthographicCamera, Stars, useGLTF, Text, Float } from "@react-three/drei";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Physics, RigidBody, CuboidCollider } from "@react-three/rapier";
+import { Physics, RigidBody, CuboidCollider, RapierRigidBody } from "@react-three/rapier";
 import { Suspense, useRef, useState, useMemo, useEffect } from "react";
 import * as THREE from "three";
 import Thruster from "./Thruster";
 
-function Meteor({ id, position, scale, speed, onHit, onDespawn }) {
-    const rigidBody = useRef(null);
+type Vec3 = [number, number, number];
+interface MeteorProps {
+  id: string;
+  position: Vec3;
+  scale: number;
+  speed: number;
+  onHit: () => void;
+  onDespawn: (id: string) => void;
+}
+
+interface MeteorData {
+  id: string;
+  x: number;
+  scale: number;
+  speed: number;
+}
+
+function Meteor({ id, position, scale, speed, onHit, onDespawn }: MeteorProps) {
+    const rigidBody = useRef<RapierRigidBody>(null);
 
     useFrame((state, delta) => {
         if (!rigidBody.current) return;
@@ -45,10 +62,10 @@ function Meteor({ id, position, scale, speed, onHit, onDespawn }) {
     );
 }
 
-function Spaceship({ gameOver }) {
+function Spaceship({ gameOver }: { gameOver: boolean }) {
     const gltf = useGLTF("/models/spaceship2.glb");
     const scene = gltf.scene;
-    const rb = useRef(null);
+    const rb = useRef<RapierRigidBody>(null);
 
     const previousXRef = useRef(0);
     const bankRef = useRef(0);
@@ -59,7 +76,7 @@ function Spaceship({ gameOver }) {
     const rotationEuler = new THREE.Euler(0, 0, 0, "XYZ");
     const rotationQuaternion = new THREE.Quaternion();
 
-    function easeInOutQuad(t) {
+    function easeInOutQuad(t: number) {
         return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
     }
 
@@ -145,9 +162,9 @@ function Spaceship({ gameOver }) {
     );
 }
 
-function MeteorController({ setGameOver, gameOver }) {
+function MeteorController({ setGameOver, gameOver }: { setGameOver: (value: boolean) => void; gameOver: boolean }) {
     const { viewport } = useThree();
-    const [meteors, setMeteors] = useState([]);
+    const [meteors, setMeteors] = useState<MeteorData[]>([]);
     const lastSpawnTime = useRef(0);
     
     // Seconds between spawns
@@ -175,6 +192,7 @@ function MeteorController({ setGameOver, gameOver }) {
         }
     });
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const removeMeteor = (id) => {
         setMeteors((prev) => prev.filter((m) => m.id !== id));
     };
@@ -197,7 +215,7 @@ function MeteorController({ setGameOver, gameOver }) {
 }
 
 // game over overlay
-function GameOverOverlay({ onRestart }) {
+function GameOverOverlay({ onRestart }: { onRestart: () => void }) {
     return (
         <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/70 z-10 text-white font-bold">
             <h1 className="text-6xl mb-4 text-red-500">GAME OVER</h1>
