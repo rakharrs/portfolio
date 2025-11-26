@@ -9,7 +9,7 @@ import Link from 'next/link';
 
 export const Hero: React.FC = () => {
     return (
-        <div className="relative flex flex-col items-center justify-center min-h-screen w-full overflow-hidden pt-16">
+        <div className="text-center relative flex flex-col items-center justify-center min-h-screen w-full overflow-hidden pt-16">
 
             <div className="relative z-10 container px-4 md:px-6 flex flex-col items-center gap-8">
 
@@ -28,17 +28,36 @@ export const Hero: React.FC = () => {
                     <div className="mx-auto max-w-[900px] text-gray-400 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed ">
                         <TextType
                             loop={false}
-                            text={["Hi, I am Rodolphe Yoann RAKOTO-HARISOA, a computer science student & full stack developper passionate about data science, web application and game development. Contact me to help you craft efficient and scalable solutions with a touch of creativity."]}
+                            text={["Hi, I am Rodolphe Yoann RAKOTO-HARISOA"]}
                             typingSpeed={7}
                             // deletingSpeed={80}
                             pauseDuration={-1}
                             showCursor={false}
                             cursorCharacter="|"
-
+                        />
+                        <TextType
+                            loop={false}
+                            text={["A computer science student & full stack developper that loves training, experimenting and learning new skills. From web development to 3D programming, I enjoy creating interactive experiences and pushing the boundaries of technology."]}
+                            typingSpeed={7}
+                            initialDelay={10}
+                            // deletingSpeed={80}
+                            pauseDuration={-1}
+                            showCursor={false}
+                            cursorCharacter="|"
+                        />
+                          <TextType
+                            loop={false}
+                            text={["Welcome to my portfolio!"]}
+                            typingSpeed={7}
+                            initialDelay={2000}
+                            // deletingSpeed={80}
+                            pauseDuration={-1}
+                            showCursor={false}
+                            cursorCharacter="|"
                         />
 
                     </div>
-                    <div className="flex flex-col sm:flex-row gap-4 justify-end w-full">
+                    <div className="flex flex-col sm:flex-row gap-4 justify-center w-full">
                         <a href={"/spaceship"}>
                             <Button variant={"outline"} size="lg" className="cursor-target cursor-none text-white font-departure">
                                 ▷ Wanna play ?

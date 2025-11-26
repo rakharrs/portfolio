@@ -1,5 +1,5 @@
 "use client";
-import { OrthographicCamera, Stars, useGLTF, Float } from "@react-three/drei";
+import { OrthographicCamera, Stars, useGLTF, Float, Stats } from "@react-three/drei";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Physics, RigidBody, RapierRigidBody } from "@react-three/rapier";
 import { Suspense, useEffect, useRef, useState } from "react";
@@ -29,7 +29,7 @@ interface MeteorData {
     speed: number;
 }
 
-function Meteor({ id, position, scale, speed, pause, gameOver, onHit, onDespawn }: MeteorProps ) {
+function Meteor({ id, position, scale, speed, pause, gameOver, onHit, onDespawn }: MeteorProps) {
     const rigidBody = useRef<RapierRigidBody>(null);
 
     useFrame((state, delta) => {
@@ -228,7 +228,7 @@ function MeteorController({ setGameOver, gameOver, pause, onShipHit, setScore, s
             const id = Math.random().toString();
             const x = (Math.random() - 0.5) * viewport.width; // Span full width
             const scale = 0.5 + Math.random() * 1.5; // Random size 0.5 to 2.0
-            const speed = 2 + Math.random() * 50; // Random speed
+            const speed = 2 + Math.random() * (score + 1); // Random speed
 
             setMeteors((prev) => [
                 ...prev,
@@ -268,12 +268,23 @@ function GameOverOverlay({ onRestart }: { onRestart: () => void }) {
     return (
         <div className="font-departure absolute inset-0 flex flex-col items-center justify-center bg-black/30 z-10 text-white font-bold">
             <h1 className="text-6xl mb-4 text-red-500">GAME OVER</h1>
-            <button
-                onClick={onRestart}
-                className="px-6 cursor-none py-3 bg-white text-black rounded hover:bg-gray-300 transition"
-            >
-                Restart
-            </button>
+
+            <div className="flex gap-4">
+                <button
+                    onClick={onRestart}
+                    className="px-6 py-3 cursor-none bg-white text-black rounded hover:bg-gray-300 transition"
+                >
+                    Restart
+                </button>
+
+                <button
+                    onClick={() => window.location.href = "/"}
+                    className="px-6 py-3 cursor-none bg-red-600 text-white rounded hover:bg-red-500 transition"
+                >
+                    Exit
+                </button>
+            </div>
+
         </div>
     );
 }
@@ -283,12 +294,21 @@ function GamePauseOverlay({ onResume }: { onResume: () => void }) {
         <div className="font-departure 
         absolute inset-0 flex flex-col items-center justify-center bg-black/50 z-10 text-white font-bold">
             <h1 className="text-6xl mb-4 text-yellow-300">PAUSED</h1>
-            <button
-                onClick={onResume}
-                className={cn(["cursor-none px-6 py-3 bg-white text-black rounded hover:bg-gray-300 transition"])}
-            >
-                Resume
-            </button>
+
+            <div className="flex gap-4">
+                <button
+                    onClick={onResume}
+                    className={cn(["cursor-none px-6 py-3 bg-white text-black rounded hover:bg-gray-300 transition"])}
+                >
+                    Resume
+                </button>
+                <button
+                    onClick={() => window.location.href = "/"}
+                    className="px-6 py-3 cursor-none bg-red-600 text-white rounded hover:bg-red-500 transition"
+                >
+                    Quit
+                </button>
+            </div>
         </div>
     );
 }
