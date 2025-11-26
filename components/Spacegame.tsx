@@ -192,8 +192,8 @@ function MeteorController({ setGameOver, gameOver }: { setGameOver: (value: bool
         }
     });
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const removeMeteor = (id) => {
+    
+    const removeMeteor = (id: string) => {
         setMeteors((prev) => prev.filter((m) => m.id !== id));
     };
 
