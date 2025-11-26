@@ -2,11 +2,11 @@
 import { OrthographicCamera, Stars, useGLTF, Float } from "@react-three/drei";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Physics, RigidBody, RapierRigidBody } from "@react-three/rapier";
-import { Suspense, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import Thruster from "./Thruster";
 import { GameLoader } from "@/app/spaceship/GameLoader";
-import { Button } from "./ui/button";
+import { cn } from "@/lib/utils";
 
 useGLTF.preload("/models/spaceship2.glb");
 type Vec3 = [number, number, number];
@@ -15,6 +15,7 @@ interface MeteorProps {
     position: Vec3;
     scale: number;
     speed: number;
+    pause: boolean;
     onHit: () => void;
     onDespawn: (id: string) => void;
 }
@@ -26,12 +27,11 @@ interface MeteorData {
     speed: number;
 }
 
-function Meteor({ id, position, scale, speed, onHit, onDespawn }: MeteorProps) {
+function Meteor({ id, position, scale, speed, pause, onHit, onDespawn }: MeteorProps) {
     const rigidBody = useRef<RapierRigidBody>(null);
 
     useFrame((state, delta) => {
-        if (!rigidBody.current) return;
-
+        if (!rigidBody.current || pause) return;
         // Check if off-screen (despawn)
         // Since camera is at 0,0,10 and zooming, let's assume -15 is well below screen
         const currentPos = rigidBody.current.translation();
@@ -47,7 +47,7 @@ function Meteor({ id, position, scale, speed, onHit, onDespawn }: MeteorProps) {
             position={position}
             // KinematicVelocity allows us to set constant speed, 
             type="kinematicVelocity"
-            linearVelocity={[0, -speed, 0]}
+            linearVelocity={[0, pause ? 0 : -speed, 0]}
             colliders="cuboid"
             // Important: Detect collision with the spaceship
             onCollisionEnter={({ other }) => {
@@ -65,7 +65,7 @@ function Meteor({ id, position, scale, speed, onHit, onDespawn }: MeteorProps) {
     );
 }
 
-function Spaceship({ gameOver }: { gameOver: boolean }) {
+function Spaceship({ gameOver, pause }: { gameOver: boolean, pause: boolean }) {
     const gltf = useGLTF("/models/spaceship2.glb");
     const scene = gltf.scene;
     const rb = useRef<RapierRigidBody>(null);
@@ -86,8 +86,8 @@ function Spaceship({ gameOver }: { gameOver: boolean }) {
     useFrame((state, delta) => {
         if (!rb.current) return;
 
-        // FREEZE CONTROLS IF GAME OVER
-        if (gameOver) return;
+        // FREEZE CONTROLS IF GAME OVER OR PAUSED
+        if (gameOver || pause) return;
 
         const targetX = (state.pointer.x * state.viewport.width) / 2;
         const currentTranslation = rb.current.translation();
@@ -165,7 +165,7 @@ function Spaceship({ gameOver }: { gameOver: boolean }) {
     );
 }
 
-function MeteorController({ setGameOver, gameOver }: { setGameOver: (value: boolean) => void; gameOver: boolean }) {
+function MeteorController({ setGameOver, gameOver, pause }: { setGameOver: (value: boolean) => void; gameOver: boolean; pause: boolean }) {
     const { viewport } = useThree();
     const [meteors, setMeteors] = useState<MeteorData[]>([]);
     const lastSpawnTime = useRef(0);
@@ -174,7 +174,7 @@ function MeteorController({ setGameOver, gameOver }: { setGameOver: (value: bool
     const spawnRate = 1.0;
 
     useFrame((state) => {
-        if (gameOver) return;
+        if (gameOver || pause) return;
 
         const time = state.clock.getElapsedTime();
 
@@ -204,6 +204,8 @@ function MeteorController({ setGameOver, gameOver }: { setGameOver: (value: bool
         <>
             {meteors.map((meteor) => (
                 <Meteor
+                    pause={pause}
+
                     key={meteor.id}
                     id={meteor.id}
                     position={[meteor.x, 10, 0]} // Start above screen
@@ -218,6 +220,7 @@ function MeteorController({ setGameOver, gameOver }: { setGameOver: (value: bool
 }
 
 // game over overlay
+
 function GameOverOverlay({ onRestart }: { onRestart: () => void }) {
     return (
         <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/70 z-10 text-white font-bold">
@@ -232,17 +235,47 @@ function GameOverOverlay({ onRestart }: { onRestart: () => void }) {
     );
 }
 
+function GamePauseOverlay({ onResume }: { onResume: () => void }) {
+    return (
+        <div className="font-departure 
+        absolute inset-0 flex flex-col items-center justify-center bg-black/50 z-10 text-white font-bold">
+            <h1 className="text-6xl mb-4 text-yellow-300">PAUSED</h1>
+            <button
+                onClick={onResume}
+                className={cn(["cursor-none px-6 py-3 bg-white text-black rounded hover:bg-gray-300 transition"])}
+            >
+                Resume
+            </button>
+        </div>
+    );
+}
+
 export function TestSpaceGame() {
     const [gameOver, setGameOver] = useState(false);
+    const [pause, setPause] = useState(false);
 
     const handleRestart = () => {
         window.location.reload();
     };
 
+    const handleResume = () => {
+        setPause(false);
+    }
+
+    useEffect(() => {
+        const handler = (e: KeyboardEvent) => {
+            if (e.key === "p") setPause((prev) => !prev);
+        };
+        window.addEventListener("keydown", handler);
+        return () => window.removeEventListener("keydown", handler);
+    })
+
     return (
         <div className="w-full h-screen bg-[radial-gradient(ellipse_at_bottom,_#262626_0%,_#000_100%)]">
 
             {gameOver && <GameOverOverlay onRestart={handleRestart} />}
+            {pause && <GamePauseOverlay onResume={handleResume} />}
+
             <GameLoader />
             <Canvas shadows>
                 <Suspense fallback={null}>
@@ -268,11 +301,12 @@ export function TestSpaceGame() {
                     <Physics gravity={[0, 0, 0]} debug={true}>
 
 
-                        <Spaceship gameOver={gameOver} />
+                        <Spaceship gameOver={gameOver} pause={pause} />
 
                         <MeteorController
                             gameOver={gameOver}
                             setGameOver={setGameOver}
+                            pause={pause}
                         />
 
                     </Physics>
