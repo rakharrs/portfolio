@@ -4,6 +4,7 @@ import { useFrame } from "@react-three/fiber";
 import { useRef } from "react";
 import * as THREE from "three";
 
+
 const fireFrames = [
   "/models/fire/fire1.png",
   "/models/fire/fire2.png", 
@@ -14,6 +15,7 @@ const fireFrames = [
   "/models/fire/fire7.png",
 ];
 
+useTexture.preload(fireFrames);
 
 export default function Thruster({ position = [0, 0, 0], scale = 1 }) {
   // Load all textures at once

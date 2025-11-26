@@ -1,26 +1,28 @@
 "use client";
-import { OrthographicCamera, Stars, useGLTF, Text, Float } from "@react-three/drei";
+import { OrthographicCamera, Stars, useGLTF, Float } from "@react-three/drei";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Physics, RigidBody, CuboidCollider, RapierRigidBody } from "@react-three/rapier";
-import { Suspense, useRef, useState, useMemo, useEffect } from "react";
+import { Physics, RigidBody, RapierRigidBody } from "@react-three/rapier";
+import { Suspense, useRef, useState } from "react";
 import * as THREE from "three";
 import Thruster from "./Thruster";
+import { GameLoader } from "@/app/spaceship/GameLoader";
 
+useGLTF.preload("/models/spaceship2.glb");
 type Vec3 = [number, number, number];
 interface MeteorProps {
-  id: string;
-  position: Vec3;
-  scale: number;
-  speed: number;
-  onHit: () => void;
-  onDespawn: (id: string) => void;
+    id: string;
+    position: Vec3;
+    scale: number;
+    speed: number;
+    onHit: () => void;
+    onDespawn: (id: string) => void;
 }
 
 interface MeteorData {
-  id: string;
-  x: number;
-  scale: number;
-  speed: number;
+    id: string;
+    x: number;
+    scale: number;
+    speed: number;
 }
 
 function Meteor({ id, position, scale, speed, onHit, onDespawn }: MeteorProps) {
@@ -44,12 +46,12 @@ function Meteor({ id, position, scale, speed, onHit, onDespawn }: MeteorProps) {
             position={position}
             // KinematicVelocity allows us to set constant speed, 
             type="kinematicVelocity"
-            linearVelocity={[0, -speed, 0]} 
+            linearVelocity={[0, -speed, 0]}
             colliders="cuboid"
             // Important: Detect collision with the spaceship
             onCollisionEnter={({ other }) => {
                 onHit();
-                
+
             }}
         >
             <Float speed={0} rotationIntensity={0} floatIntensity={0}>
@@ -104,8 +106,8 @@ function Spaceship({ gameOver }: { gameOver: boolean }) {
         bankRef.current = smoothedBank;
 
         // Barrel Roll Logic
-        const rollTriggerSpeed = 50; 
-        const rollDuration = 0.6;   
+        const rollTriggerSpeed = 50;
+        const rollDuration = 0.6;
 
         if (!isRollingRef.current && Math.abs(vx) > rollTriggerSpeed) {
             isRollingRef.current = true;
@@ -127,9 +129,9 @@ function Spaceship({ gameOver }: { gameOver: boolean }) {
 
         // Idle Animations
         const time = state.clock.getElapsedTime();
-        const idleBob = Math.sin(time * 2) * 0.15;        
-        const idlePitch = Math.sin(time * 1.3) * 0.05;    
-        const idleRoll = Math.sin(time * 1.7) * 0.1;     
+        const idleBob = Math.sin(time * 2) * 0.15;
+        const idlePitch = Math.sin(time * 1.3) * 0.05;
+        const idleRoll = Math.sin(time * 1.7) * 0.1;
 
         // Apply Position
         rb.current.setNextKinematicTranslation({
@@ -151,7 +153,7 @@ function Spaceship({ gameOver }: { gameOver: boolean }) {
     return (
         <RigidBody
             ref={rb}
-            name="spaceship" 
+            name="spaceship"
             type="kinematicPosition"
             position={[0, -6, 0]}
             colliders="cuboid"
@@ -166,9 +168,9 @@ function MeteorController({ setGameOver, gameOver }: { setGameOver: (value: bool
     const { viewport } = useThree();
     const [meteors, setMeteors] = useState<MeteorData[]>([]);
     const lastSpawnTime = useRef(0);
-    
+
     // Seconds between spawns
-    const spawnRate = 1.0; 
+    const spawnRate = 1.0;
 
     useFrame((state) => {
         if (gameOver) return;
@@ -178,7 +180,7 @@ function MeteorController({ setGameOver, gameOver }: { setGameOver: (value: bool
         // Spawn logic
         if (time - lastSpawnTime.current > spawnRate) {
             lastSpawnTime.current = time;
-            
+
             // Random attributes
             const id = Math.random().toString();
             const x = (Math.random() - 0.5) * viewport.width; // Span full width
@@ -192,7 +194,7 @@ function MeteorController({ setGameOver, gameOver }: { setGameOver: (value: bool
         }
     });
 
-    
+
     const removeMeteor = (id: string) => {
         setMeteors((prev) => prev.filter((m) => m.id !== id));
     };
@@ -219,7 +221,7 @@ function GameOverOverlay({ onRestart }: { onRestart: () => void }) {
     return (
         <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/70 z-10 text-white font-bold">
             <h1 className="text-6xl mb-4 text-red-500">GAME OVER</h1>
-            <button 
+            <button
                 onClick={onRestart}
                 className="px-6 py-3 bg-white text-black rounded hover:bg-gray-300 transition"
             >
@@ -233,46 +235,49 @@ export function TestSpaceGame() {
     const [gameOver, setGameOver] = useState(false);
 
     const handleRestart = () => {
-        window.location.reload(); 
+        window.location.reload();
     };
 
     return (
         <div className="w-full h-screen bg-[radial-gradient(ellipse_at_bottom,_#262626_0%,_#000_100%)]">
-            
+
             {gameOver && <GameOverOverlay onRestart={handleRestart} />}
-
+            <GameLoader />
             <Canvas shadows>
-                <OrthographicCamera
-                    makeDefault
-                    position={[0, 0, 10]}
-                    zoom={50}
-                    castShadow
-                />
-                <ambientLight intensity={0.7} />
-                <directionalLight position={[0, 0, 1]} intensity={1} castShadow />
+                <Suspense fallback={null}>
+                    <OrthographicCamera
+                        makeDefault
+                        position={[0, 0, 10]}
+                        zoom={50}
+                        castShadow
+                    />
+                    <ambientLight intensity={0.7} />
+                    <directionalLight position={[0, 0, 1]} intensity={1} castShadow />
 
-                <Stars
-                    radius={100}
-                    depth={10}
-                    count={1000}
-                    factor={10}
-                    saturation={10}
-                    fade
-                    speed={2}
-                />
+                    <Stars
+                        radius={100}
+                        depth={10}
+                        count={1000}
+                        factor={10}
+                        saturation={10}
+                        fade
+                        speed={2}
+                    />
 
-                <Physics gravity={[0, 0, 0]} debug={true}>
-                    <Suspense fallback={null}>
-                        
+                    <Physics gravity={[0, 0, 0]} debug={true}>
+
+
                         <Spaceship gameOver={gameOver} />
-                        
-                        <MeteorController 
-                            gameOver={gameOver} 
-                            setGameOver={setGameOver} 
+
+                        <MeteorController
+                            gameOver={gameOver}
+                            setGameOver={setGameOver}
                         />
-                    </Suspense>
-                </Physics>
+
+                    </Physics>
+                </Suspense>
             </Canvas>
+
         </div>
     );
 }
