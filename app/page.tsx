@@ -8,15 +8,6 @@ export default function Home() {
   return (
     <>
       <div className="dark max-h-screen bg-background font-sans antialiased selection:bg-primary selection:text-primary-foreground">
-        <TargetCursor
-
-          spinDuration={2}
-
-          hideDefaultCursor={true}
-
-          parallaxOn={true}
-
-        />
 
         <main className="flex-1">
           <Hero />
