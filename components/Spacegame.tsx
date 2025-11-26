@@ -6,6 +6,7 @@ import { Suspense, useRef, useState } from "react";
 import * as THREE from "three";
 import Thruster from "./Thruster";
 import { GameLoader } from "@/app/spaceship/GameLoader";
+import { Button } from "./ui/button";
 
 useGLTF.preload("/models/spaceship2.glb");
 type Vec3 = [number, number, number];
