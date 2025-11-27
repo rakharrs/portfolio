@@ -22,7 +22,7 @@ const skills = [
 
 export const Hero: React.FC = () => {
     return (
-        <div className="relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden pt-16 text-center">
+        <div className="no-touch relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden pt-16 text-center">
 
             <div className="relative z-10 container flex flex-col items-center gap-8 px-4 md:px-6">
                 <div className="space-y-6 max-w-3xl">
