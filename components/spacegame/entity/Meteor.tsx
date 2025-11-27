@@ -15,32 +15,57 @@ interface MeteorProps {
     onDespawn: (id: string) => void;
 }
 
-export default function Meteor({ id, position, scale, speed, pause, gameOver, onHit, onDespawn }: MeteorProps) {
+export default function Meteor({
+    id,
+    position,
+    scale,
+    speed,
+    pause,
+    gameOver,
+    onHit,
+    onDespawn,
+}: MeteorProps) {
     const rigidBody = useRef<RapierRigidBody>(null);
 
-    useFrame((state, delta) => {
+    useFrame(() => {
         if (!rigidBody.current || pause) return;
-        // Check if off-screen (despawn)
-        // Since camera is at 0,0,10 and zooming, let's assume -15 is well below screen
+
         const currentPos = rigidBody.current.translation();
+
+        // Despawn when off-screen (still used for scoring)
         if (currentPos.y < -15) {
             onDespawn(id);
         }
-
     });
 
     return (
         <RigidBody
             ref={rigidBody}
+            name="meteor"
             position={position}
-            // KinematicVelocity allows us to set constant speed, 
             type="dynamic"
             linearVelocity={[0, pause || gameOver ? 0 : -speed, 0]}
+            enabledTranslations={[true, true, false]}
             colliders="hull"
-            // Important: Detect collision with the spaceship
             onCollisionEnter={({ other }) => {
-                if (other.rigidBodyObject?.name === "spaceship") {
+                const otherName = other.rigidBodyObject?.name;
+
+                // Collision with spaceship => game over / damage
+                if (otherName === "spaceship") {
                     onHit();
+                }
+
+                // Collision with beam => small push, but no despawn
+                if (otherName === "beam" && rigidBody.current) {
+                    // Slight upward + sideways impulse
+                    rigidBody.current.applyImpulse(
+                        {
+                            x: (Math.random() - 0.5) * 0.7, // small random horizontal push
+                            y: 0.5,                          // small upward kick
+                            z: 0,
+                        },
+                        true
+                    );
                 }
             }}
         >
@@ -50,6 +75,6 @@ export default function Meteor({ id, position, scale, speed, pause, gameOver, on
                     <meshStandardMaterial color="#555" flatShading={false} />
                 </mesh>
             </Float>
-        </RigidBody >
+        </RigidBody>
     );
 }

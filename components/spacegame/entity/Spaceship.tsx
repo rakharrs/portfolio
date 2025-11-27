@@ -2,15 +2,18 @@
 import { useGLTF } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { RapierRigidBody, RigidBody } from "@react-three/rapier";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import Thruster from "./Thruster";
+import Beam from "./CannonBeam";
+
 
 export default function Spaceship({ gameOver, pause, hit }: { gameOver: boolean, pause: boolean, hit: boolean }) {
     const gltf = useGLTF("/models/spaceship.glb");
     const scene = gltf.scene;
     const rb = useRef<RapierRigidBody>(null);
 
+    // Movement Refs
     const previousXRef = useRef(0);
     const bankRef = useRef(0);
     const isRollingRef = useRef(false);
@@ -20,31 +23,67 @@ export default function Spaceship({ gameOver, pause, hit }: { gameOver: boolean,
     const rotationEuler = new THREE.Euler(0, 0, 0, "XYZ");
     const rotationQuaternion = new THREE.Quaternion();
 
-    // fly-away state (when hit)
+    // Fly-away state (when hit)
     const hasStartedFlyAway = useRef(false);
     const flyVel = useRef(new THREE.Vector3());
     const flyRotVel = useRef(new THREE.Vector3());
+
+    // --- SHOOTING LOGIC STATE ---
+    const [beams, setBeams] = useState<{ id: number; position: [number, number, number] }[]>([]);
+    const beamIdCounter = useRef(0);
+
+    // Helper to remove beam from state
+    const removeBeam = (id: number) => {
+        setBeams((prev) => prev.filter((b) => b.id !== id));
+    };
 
     function easeInOutQuad(t: number) {
         return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
     }
 
+    // LISTENER: CLICK TO SHOOT
+    useEffect(() => {
+        const handleShoot = () => {
+            if (gameOver || pause || hit || !rb.current) return;
+
+            const shipPos = rb.current.translation();
+
+            // Offset for left and right wings (approximate based on your model scale)
+            const wingOffset = 0.6;
+            const startY = shipPos.y;
+            const startZ = shipPos.z; // -0.5 to spawn slightly behind nose?
+
+            const leftBeam = {
+                id: beamIdCounter.current++,
+                position: [shipPos.x - wingOffset, startY, startZ] as [number, number, number],
+            };
+
+            const rightBeam = {
+                id: beamIdCounter.current++,
+                position: [shipPos.x + wingOffset, startY, startZ] as [number, number, number],
+            };
+
+            setBeams((prev) => [...prev, leftBeam, rightBeam]);
+        };
+
+        window.addEventListener("pointerdown", handleShoot);
+        return () => window.removeEventListener("pointerdown", handleShoot);
+    }, [gameOver, pause, hit]);
+
+
     useFrame((state, delta) => {
         if (!rb.current) return;
         const currentTranslation = rb.current.translation();
 
+        // --- GAME OVER / HIT LOGIC ---
         if (hit) {
-            // init once
             if (!hasStartedFlyAway.current) {
                 hasStartedFlyAway.current = true;
-
-                // give it some initial velocity & spin
                 const dir = currentTranslation.x >= 0 ? 1 : -1;
-                flyVel.current.set(5 * dir, 10, -5);            // sideways + up + into screen
-                flyRotVel.current.set(2, 4 * dir, 1);          // rotation speed
+                flyVel.current.set(5 * dir, 10, -5);
+                flyRotVel.current.set(2, 4 * dir, 1);
             }
 
-            // fake gravity
             flyVel.current.y -= 15 * delta;
 
             const newX = currentTranslation.x + flyVel.current.x * delta;
@@ -53,7 +92,6 @@ export default function Spaceship({ gameOver, pause, hit }: { gameOver: boolean,
 
             rb.current.setNextKinematicTranslation({ x: newX, y: newY, z: newZ });
 
-            // spin
             rotationEuler.set(
                 rotationEuler.x + flyRotVel.current.x * delta,
                 rotationEuler.y + flyRotVel.current.y * delta,
@@ -62,18 +100,16 @@ export default function Spaceship({ gameOver, pause, hit }: { gameOver: boolean,
             rotationQuaternion.setFromEuler(rotationEuler);
             rb.current.setNextKinematicRotation(rotationQuaternion);
 
-            return; // stop normal control
+            return;
         }
-        // FREEZE CONTROLS IF GAME OVER OR PAUSED
+
         if (gameOver || pause) return;
 
-
-
-
+        // --- NORMAL FLIGHT LOGIC ---
         const targetX = (state.pointer.x * state.viewport.width) / 2;
         const smoothX = THREE.MathUtils.lerp(currentTranslation.x, targetX, 0.1);
 
-        // Calculate velocity and tilt
+        // Velocity & Tilt
         const dx = targetX - smoothX;
         const yaw = THREE.MathUtils.clamp(dx * 0.15, -0.8, 0.8);
         const previousX = previousXRef.current;
@@ -132,15 +168,27 @@ export default function Spaceship({ gameOver, pause, hit }: { gameOver: boolean,
     });
 
     return (
-        <RigidBody
-            ref={rb}
-            name="spaceship"
-            type="kinematicPosition"
-            position={[0, -6, 0]}
-            colliders="hull"
-        >
-            <primitive object={scene} scale={1.2} rotation={[1.8, Math.PI, 0]} />
-            <Thruster position={[0, -1.6, 0]} scale={1} />
-        </RigidBody>
+        <>
+            <RigidBody
+                ref={rb}
+                name="spaceship"
+                type="kinematicPosition"
+                position={[0, -6, 0]}
+                colliders="hull"
+            >
+                <primitive object={scene} scale={1.2} rotation={[1.8, Math.PI, 0]} />
+                <Thruster position={[0, -1.6, 0]} scale={1} />
+            </RigidBody>
+
+            {/* Render Active Beams */}
+            {beams.map((beam) => (
+                <Beam
+                    key={beam.id}
+                    id={beam.id}
+                    position={beam.position}
+                    onRemove={removeBeam}
+                />
+            ))}
+        </>
     );
 }
