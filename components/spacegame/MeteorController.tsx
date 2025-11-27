@@ -30,7 +30,7 @@ export default function MeteorController({ setGameOver, gameOver, pause, onShipH
             const id = Math.random().toString();
             const x = (Math.random() - 0.5) * viewport.width; // Span full width
             const scale = 0.5 + Math.random() * 1.5; // Random size 0.5 to 2.0
-            const speed = 2 + Math.random() * (score + 1); // Random speed
+            const speed = 2 + Math.random() * (score + 0.5); // Random speed
 
             setMeteors((prev) => [
                 ...prev,

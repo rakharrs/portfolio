@@ -120,3 +120,7 @@
     @apply bg-background text-foreground;
   }
 }
+
+.no-touch{
+  touch-action: none !important;
+}
