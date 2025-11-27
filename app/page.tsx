@@ -1,5 +1,4 @@
 import { StarsBackground } from "@/components/animate-ui/components/backgrounds/stars";
-import TargetCursor from "@/components/effects/TargetCursor";
 import { Hero } from "@/components/Hero";
 import { cn } from "@/lib/utils";
 
