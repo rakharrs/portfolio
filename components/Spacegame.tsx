@@ -14,7 +14,7 @@ useGLTF.preload("/models/spaceship.glb");
 // game over overlay
 function GameOverOverlay({ onRestart }: { onRestart: () => void }) {
     return (
-        <div className="font-departure absolute inset-0 flex flex-col items-center justify-center bg-black/30 z-10 text-white font-bold">
+        <div className="font-departure absolute inset-0 flex flex-col items-center justify-center bg-black/30 z-20 text-white font-bold">
             <h1 className="text-6xl mb-4 text-red-500">GAME OVER</h1>
 
             <div className="flex gap-4">
@@ -41,7 +41,7 @@ function GameOverOverlay({ onRestart }: { onRestart: () => void }) {
 function GamePauseOverlay({ onResume }: { onResume: () => void }) {
     return (
         <div className="font-departure 
-        absolute inset-0 flex flex-col items-center justify-center bg-black/50 z-10 text-white font-bold">
+        absolute inset-0 flex flex-col items-center justify-center bg-black/50 z-20 text-white font-bold">
             <h1 className="text-6xl mb-4 text-yellow-300">PAUSED</h1>
 
             <div className="flex gap-4">
@@ -119,7 +119,7 @@ export function SpaceGame() {
                             speed={2}
                         />
 
-                        <Physics gravity={[0, 0, 0]} debug={true}>
+                        <Physics gravity={[0, 0, 0]} debug={false}>
 
 
                             <Spaceship gameOver={gameOver} pause={pause} hit={shipHit} />
