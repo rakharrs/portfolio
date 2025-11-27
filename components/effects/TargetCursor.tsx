@@ -43,8 +43,9 @@ const TargetCursor: React.FC<TargetCursorProps> = ({
     const hasTouchScreen =
       "ontouchstart" in window || navigator.maxTouchPoints > 0;
     const isSmallScreen = window.innerWidth <= 768;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    
     const userAgent =
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       navigator.userAgent || navigator.vendor || (window as any).opera;
     const mobileRegex =
       /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i;

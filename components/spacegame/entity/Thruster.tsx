@@ -1,5 +1,5 @@
 "use client";
-import { useNormalTexture, useTexture } from "@react-three/drei";
+import { useTexture } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { useRef } from "react";
 import * as THREE from "three";
@@ -32,7 +32,7 @@ export default function Thruster({ position = [0, 0, 0], scale = 1 }) {
   useFrame((state) => {
     if (!materialRef.current) return;
 
-    // 1. Calculate the current frame index
+    // Calculate the current frame index
     const speed = 15;
     const index = Math.floor(state.clock.elapsedTime * speed) % textures.length;
     const currentTexture = textures[index];
@@ -44,7 +44,7 @@ export default function Thruster({ position = [0, 0, 0], scale = 1 }) {
       currentTexture.needsUpdate = true;
     }
 
-    // 3. Swap the texture
+    // Swap the texture
     materialRef.current.map = currentTexture;
   });
 
