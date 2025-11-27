@@ -37,6 +37,7 @@ function GameOverOverlay({ onRestart }: { onRestart: () => void }) {
     );
 }
 
+// game pause overlay
 function GamePauseOverlay({ onResume }: { onResume: () => void }) {
     return (
         <div className="font-departure 
@@ -118,7 +119,7 @@ export function SpaceGame() {
                             speed={2}
                         />
 
-                        <Physics gravity={[0, 0, 0]} debug={false}>
+                        <Physics gravity={[0, 0, 0]} debug={true}>
 
 
                             <Spaceship gameOver={gameOver} pause={pause} hit={shipHit} />
