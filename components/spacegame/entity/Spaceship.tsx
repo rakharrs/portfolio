@@ -1,5 +1,5 @@
 "use client";
-import { useGLTF } from "@react-three/drei";
+import { Html, useGLTF } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { RapierRigidBody, RigidBody } from "@react-three/rapier";
 import { useEffect, useRef, useState } from "react";
@@ -28,9 +28,17 @@ export default function Spaceship({ gameOver, pause, hit }: { gameOver: boolean,
     const flyVel = useRef(new THREE.Vector3());
     const flyRotVel = useRef(new THREE.Vector3());
 
-    // --- SHOOTING LOGIC STATE ---
-    const [beams, setBeams] = useState<{ id: number; position: [number, number, number] }[]>([]);
+    // Shooting state
+    const [beams, setBeams] = useState<{
+        id: number;
+        position: [number, number, number];
+        direction: [number, number, number];
+    }[]>([]);
     const beamIdCounter = useRef(0);
+
+    const [cooldownProgress, setCooldownProgress] = useState(1);
+    const lastShotRef = useRef<number | null>(null);
+    const cooldownDuration = 1000; // ms (1 second between shots)
 
     // Helper to remove beam from state
     const removeBeam = (id: number) => {
@@ -41,26 +49,50 @@ export default function Spaceship({ gameOver, pause, hit }: { gameOver: boolean,
         return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
     }
 
-    // LISTENER: CLICK TO SHOOT
     useEffect(() => {
         const handleShoot = () => {
             if (gameOver || pause || hit || !rb.current) return;
 
+            const now = performance.now();
+            // cooldown check
+            if (lastShotRef.current && now - lastShotRef.current < cooldownDuration) {
+                return;
+            }
+
+            lastShotRef.current = now;
+            setCooldownProgress(0);
+
             const shipPos = rb.current.translation();
 
-            // Offset for left and right wings (approximate based on your model scale)
-            const wingOffset = 0.6;
-            const startY = shipPos.y;
-            const startZ = shipPos.z; // -0.5 to spawn slightly behind nose?
+            const r = rb.current.rotation();
+            const shipQuat = new THREE.Quaternion(r.x, r.y, r.z, r.w);
+
+            // firing direction - up from ship
+            const baseDir = new THREE.Vector3(0, 1, 0);
+
+            // Convert to world direction using rotation
+            const worldDir = baseDir.clone().applyQuaternion(shipQuat).normalize();
+
+            const wingOffset = 0.9;
+            const startY = shipPos.y + 1;
+            const startZ = shipPos.z;
+
+            const dirTuple: [number, number, number] = [
+                worldDir.x,
+                worldDir.y,
+                worldDir.z,
+            ];
 
             const leftBeam = {
                 id: beamIdCounter.current++,
                 position: [shipPos.x - wingOffset, startY, startZ] as [number, number, number],
+                direction: dirTuple,
             };
 
             const rightBeam = {
                 id: beamIdCounter.current++,
                 position: [shipPos.x + wingOffset, startY, startZ] as [number, number, number],
+                direction: dirTuple,
             };
 
             setBeams((prev) => [...prev, leftBeam, rightBeam]);
@@ -70,12 +102,10 @@ export default function Spaceship({ gameOver, pause, hit }: { gameOver: boolean,
         return () => window.removeEventListener("pointerdown", handleShoot);
     }, [gameOver, pause, hit]);
 
-
     useFrame((state, delta) => {
         if (!rb.current) return;
         const currentTranslation = rb.current.translation();
 
-        // --- GAME OVER / HIT LOGIC ---
         if (hit) {
             if (!hasStartedFlyAway.current) {
                 hasStartedFlyAway.current = true;
@@ -180,9 +210,9 @@ export default function Spaceship({ gameOver, pause, hit }: { gameOver: boolean,
                 <Thruster position={[0, -1.6, 0]} scale={1} />
             </RigidBody>
 
-            {/* Render Active Beams */}
             {beams.map((beam) => (
                 <Beam
+                    direction={beam.direction}
                     key={beam.id}
                     id={beam.id}
                     position={beam.position}
