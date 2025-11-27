@@ -13,8 +13,9 @@ useGLTF.preload("/models/spaceship.glb");
 
 // game over overlay
 function GameOverOverlay({ onRestart }: { onRestart: () => void }) {
+
     return (
-        <div className="font-departure absolute inset-0 flex flex-col items-center justify-center bg-black/30 z-20 text-white font-bold">
+        <div className="font-departure absolute inset-0 flex flex-col items-center justify-center bg-black/30 z-10 text-white font-bold">
             <h1 className="text-6xl mb-4 text-red-500">GAME OVER</h1>
 
             <div className="flex gap-4">
@@ -41,7 +42,7 @@ function GameOverOverlay({ onRestart }: { onRestart: () => void }) {
 function GamePauseOverlay({ onResume }: { onResume: () => void }) {
     return (
         <div className="font-departure 
-        absolute inset-0 flex flex-col items-center justify-center bg-black/50 z-20 text-white font-bold">
+        absolute inset-0 flex flex-col items-center justify-center bg-black/50 z-10 text-white font-bold">
             <h1 className="text-6xl mb-4 text-yellow-300">PAUSED</h1>
 
             <div className="flex gap-4">
@@ -67,9 +68,16 @@ export function SpaceGame() {
     const [pause, setPause] = useState(false);
     const [shipHit, setShipHit] = useState(false);
     const [score, setScore] = useState(0);
+    const [restartSignal, setRestartSignal] = useState(0);
 
     const handleRestart = () => {
-        window.location.reload();
+        setGameOver(false);
+        setPause(false);
+        setShipHit(false);
+        setScore(0);
+
+        // trigger reset inside MeteorController + Spaceship
+        setRestartSignal(prev => prev + 1);
     };
 
     const handleResume = () => {
@@ -78,7 +86,7 @@ export function SpaceGame() {
 
     useEffect(() => {
         const handler = (e: KeyboardEvent) => {
-            if (e.key === "p") setPause((prev) => !prev);
+            if (e.key === "Escape") setPause((prev) => !prev);
         };
         window.addEventListener("keydown", handler);
         return () => window.removeEventListener("keydown", handler);
@@ -122,9 +130,10 @@ export function SpaceGame() {
                         <Physics gravity={[0, 0, 0]} debug={false}>
 
 
-                            <Spaceship gameOver={gameOver} pause={pause} hit={shipHit} />
+                            <Spaceship restartSignal={restartSignal} gameOver={gameOver} pause={pause} hit={shipHit} />
 
                             <MeteorController
+                                restartSignal={restartSignal}
                                 gameOver={gameOver}
                                 setGameOver={setGameOver}
                                 pause={pause}

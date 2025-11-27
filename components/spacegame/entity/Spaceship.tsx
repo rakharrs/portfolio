@@ -8,7 +8,7 @@ import Thruster from "./Thruster";
 import Beam from "./CannonBeam";
 
 
-export default function Spaceship({ gameOver, pause, hit }: { gameOver: boolean, pause: boolean, hit: boolean }) {
+export default function Spaceship({ gameOver, pause, hit, restartSignal }: { gameOver: boolean, pause: boolean, hit: boolean, restartSignal: number }) {
     const gltf = useGLTF("/models/spaceship.glb");
     const scene = gltf.scene;
     const rb = useRef<RapierRigidBody>(null);
@@ -39,6 +39,26 @@ export default function Spaceship({ gameOver, pause, hit }: { gameOver: boolean,
     const [cooldownProgress, setCooldownProgress] = useState(1);
     const lastShotRef = useRef<number | null>(null);
     const cooldownDuration = 1000; // ms (1 second between shots)
+
+    useEffect(() => {
+        if (!rb.current) return;
+
+        // Reset position
+        rb.current.setTranslation({ x: 0, y: -6, z: 0 }, true);
+
+        // Reset rotation
+        rb.current.setRotation({ x: 0, y: 0, z: 0, w: 1 }, true);
+
+        // Reset fly-away animation
+        hasStartedFlyAway.current = false;
+        flyVel.current.set(0, 0, 0);
+        flyRotVel.current.set(0, 0, 0);
+
+        // Reset rolling
+        isRollingRef.current = false;
+        rollElapsedRef.current = 0;
+
+    }, [restartSignal]);
 
     // Helper to remove beam from state
     const removeBeam = (id: number) => {
