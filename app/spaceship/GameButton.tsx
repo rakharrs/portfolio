@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
+import { p } from "motion/react-client";
 
 export default function GameMusic() {
     const [isPlaying, setIsPlaying] = useState<boolean>(false);
@@ -18,6 +19,16 @@ export default function GameMusic() {
             audioRef.current?.play();
         }
     }
+
+    useEffect(() => {
+        const handler = (e: KeyboardEvent) => {
+            if (e.key === "m") {
+                handleMusicButton()
+            }
+        };
+        window.addEventListener("keydown", handler);
+        return () => window.removeEventListener("keydown", handler);
+    })
 
     return (
         <>
@@ -54,7 +65,11 @@ export default function GameMusic() {
                 </Button>
 
                 <span className="font-departure text-white text-sm opacity-80">
-                    Press <span className="underline">P</span> to pause/play
+                    Press <span className="underline">Esc</span> to pause game
+                </span>
+
+                <span className="font-departure text-white text-sm opacity-80">
+                    - <span className="underline">M</span> for music
                 </span>
             </div>
         </>

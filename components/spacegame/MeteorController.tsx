@@ -1,5 +1,5 @@
 import { useFrame, useThree } from "@react-three/fiber";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Meteor from "./entity/Meteor";
 
 interface MeteorData {
@@ -9,19 +9,17 @@ interface MeteorData {
     speed: number;
 }
 
-export default function MeteorController({ setGameOver, gameOver, pause, onShipHit, setScore, score }: { setGameOver: (value: boolean) => void; gameOver: boolean; pause: boolean; onShipHit: () => void; setScore: (value: number) => void; score: number }) {
+export default function MeteorController({ restartSignal, setGameOver, gameOver, pause, onShipHit, setScore, score }: { restartSignal: number, setGameOver: (value: boolean) => void; gameOver: boolean; pause: boolean; onShipHit: () => void; setScore: (value: number) => void; score: number }) {
     const { viewport } = useThree();
     const [meteors, setMeteors] = useState<MeteorData[]>([]);
     const lastSpawnTime = useRef(0);
 
     // Seconds between spawns
-    const spawnRate = 0.4;
-
     useFrame((state) => {
         if (gameOver || pause) return;
 
         const time = state.clock.getElapsedTime();
-
+        const spawnRate = 0.5 - Math.min(score * 0.02, 0.3);
         // Spawn logic
         if (time - lastSpawnTime.current > spawnRate) {
             lastSpawnTime.current = time;
@@ -30,7 +28,7 @@ export default function MeteorController({ setGameOver, gameOver, pause, onShipH
             const id = Math.random().toString();
             const x = (Math.random() - 0.5) * viewport.width; // Span full width
             const scale = 0.5 + Math.random() * 1.5; // Random size 0.5 to 2.0
-            const speed = 2 + Math.random() * (score + 0.75); // Random speed
+            const speed = 3 + Math.random() * (score + 2); // Random speed
 
             setMeteors((prev) => [
                 ...prev,
@@ -44,6 +42,15 @@ export default function MeteorController({ setGameOver, gameOver, pause, onShipH
         setMeteors((prev) => prev.filter((m) => m.id !== id));
         setScore(score + 1);
     };
+
+    useEffect(() => {
+        // Clear meteors on restart
+        meteors.forEach(meteor => {
+            removeMeteor(meteor.id);
+        });
+        setScore(0);
+        lastSpawnTime.current = 0;
+    }, [restartSignal]);
 
     return (
         <>
