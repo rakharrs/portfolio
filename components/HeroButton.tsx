@@ -1,10 +1,15 @@
 "use client"
 
-import { toast } from "sonner"
 import { Button } from "./ui/button"
-import { AlertCircle, ArrowRight } from "lucide-react"
+import { ArrowRight } from "lucide-react"
+import { usePageTransition } from "@/components/TransitionProvider";
 
 export default function HeroButton() {
+    const { startTransition } = usePageTransition();
+
+    const handleClick = () => {
+        startTransition("/about");
+    };
     return (
         <>
             <div className="flex flex-col sm:flex-row gap-4 justify-center w-full">
@@ -15,12 +20,7 @@ export default function HeroButton() {
                 </a>
 
                 <Button
-                    onClick={() =>
-                        toast.error("Coming soon", {
-                            description: "section under construction o7",
-                            icon: <AlertCircle className="h-4 w-4" />
-                        })
-                    }
+                    onClick={handleClick}
                     variant={"outline"} size="lg" className="cursor-target cursor-none text-white font-departure">
                     See more <ArrowRight className="h-4 w-4" />
                 </Button>
@@ -28,3 +28,7 @@ export default function HeroButton() {
         </>
     )
 }
+
+
+
+
