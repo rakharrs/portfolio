@@ -6,9 +6,11 @@ import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import Thruster from "./Thruster";
 import Beam from "./CannonBeam";
+import { Progress } from "@/components/ui/progress";
 
 
 export default function Spaceship({ gameOver, pause, hit, restartSignal }: { gameOver: boolean, pause: boolean, hit: boolean, restartSignal: number }) {
+
     const gltf = useGLTF("/models/spaceship.glb");
     const scene = gltf.scene;
     const rb = useRef<RapierRigidBody>(null);
@@ -19,6 +21,7 @@ export default function Spaceship({ gameOver, pause, hit, restartSignal }: { gam
     const isRollingRef = useRef(false);
     const rollElapsedRef = useRef(0);
     const rollDirectionRef = useRef(1);
+    const coolDownBarRef = useRef<RapierRigidBody>(null);
 
     const rotationEuler = new THREE.Euler(0, 0, 0, "XYZ");
     const rotationQuaternion = new THREE.Quaternion();
@@ -38,7 +41,8 @@ export default function Spaceship({ gameOver, pause, hit, restartSignal }: { gam
 
     const [cooldownProgress, setCooldownProgress] = useState(1);
     const lastShotRef = useRef<number | null>(null);
-    const cooldownDuration = 1000; // ms (1 second between shots)
+    const cooldownDuration = 2000; // ms (1 second between shots)
+    const [shotElapsed, setShotElapsed] = useState(0);
 
     useEffect(() => {
         if (!rb.current) return;
@@ -58,6 +62,9 @@ export default function Spaceship({ gameOver, pause, hit, restartSignal }: { gam
         isRollingRef.current = false;
         rollElapsedRef.current = 0;
 
+        // reset cooldown
+        lastShotRef.current = null;
+
     }, [restartSignal]);
 
     // Helper to remove beam from state
@@ -69,6 +76,7 @@ export default function Spaceship({ gameOver, pause, hit, restartSignal }: { gam
         return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
     }
 
+    // hook for speacial shoot
     useEffect(() => {
         const handleShoot = () => {
             if (gameOver || pause || hit || !rb.current) return;
@@ -122,6 +130,24 @@ export default function Spaceship({ gameOver, pause, hit, restartSignal }: { gam
         return () => window.removeEventListener("pointerdown", handleShoot);
     }, [gameOver, pause, hit]);
 
+    // hook for cooldown animation
+    useFrame(() => {
+        if (!lastShotRef.current) {
+            setCooldownProgress((prev) => (prev === 1 ? prev : 1));
+            return;
+        }
+
+        const elapsed = performance.now() - lastShotRef.current;
+        const newProgress = Math.min(elapsed / cooldownDuration, 1);
+
+
+        setCooldownProgress((prev) =>
+            Math.abs(prev - newProgress) < 0.05 ? prev : newProgress
+        );
+    });
+
+
+    // hook for gameloop
     useFrame((state, delta) => {
         if (!rb.current) return;
         const currentTranslation = rb.current.translation();
@@ -155,7 +181,6 @@ export default function Spaceship({ gameOver, pause, hit, restartSignal }: { gam
 
         if (gameOver || pause) return;
 
-        // --- NORMAL FLIGHT LOGIC ---
         const targetX = (state.pointer.x * state.viewport.width) / 2;
         const smoothX = THREE.MathUtils.lerp(currentTranslation.x, targetX, 0.1);
 
@@ -203,10 +228,14 @@ export default function Spaceship({ gameOver, pause, hit, restartSignal }: { gam
         // Apply Position
         rb.current.setNextKinematicTranslation({
             x: smoothX,
-            y: -6 + idleBob,
+            y: -5.2 + idleBob,
             z: 0,
         });
 
+        if (coolDownBarRef.current) {
+            // coolDownBarRef.current.style.transform = `translateX(${(smoothX)}px)`;
+            coolDownBarRef.current.setTranslation({ x: smoothX, y: 0, z: 0 }, true);
+        }
         // Apply Rotation
         rotationEuler.set(
             idlePitch,
@@ -229,6 +258,28 @@ export default function Spaceship({ gameOver, pause, hit, restartSignal }: { gam
                 <primitive object={scene} scale={1.2} rotation={[1.8, Math.PI, 0]} />
                 <Thruster position={[0, -1.6, 0]} scale={1} />
             </RigidBody>
+
+            <RigidBody
+                ref={coolDownBarRef}
+                type="kinematicPosition"
+                position={[0, 0, 0]}
+            >
+                <Html
+
+                    position={[0, -7.25, 0]} // slightly under the ship, tweak to taste
+                    center
+                    transform
+                    distanceFactor={10} // adjust size relative to camera
+                >
+                    <div className=" px-2 py-1 rounded-full bg-black/70 border border-white/10 backdrop-blur-sm">
+                        <Progress
+                            className="w-10 h-2"
+                            value={cooldownProgress * 100}
+                        />
+                    </div>
+                </Html>
+            </RigidBody>
+
 
             {beams.map((beam) => (
                 <Beam
