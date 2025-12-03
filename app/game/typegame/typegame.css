@@ -2,3 +2,31 @@
     color: white;
     border-right: 1px white solid;
 }
+
+.wrong-chars {
+  color: rgba(239, 68, 68, 0.95);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+}
+
+.pending-chars {
+  color: rgba(156, 163, 175, 0.85);
+}
+
+/* Input error effect: red glow + shake */
+.input-error {
+  border-color: rgba(239, 68, 68, 0.7) !important;
+  box-shadow:
+    0 0 0 2px rgba(239, 68, 68, 0.20),
+    0 10px 30px rgba(239, 68, 68, 0.15);
+  animation: tg-shake 0.18s linear;
+}
+
+@keyframes tg-shake {
+  0%   { transform: translateX(0); }
+  20%  { transform: translateX(-6px); }
+  40%  { transform: translateX(6px); }
+  60%  { transform: translateX(-4px); }
+  80%  { transform: translateX(4px); }
+  100% { transform: translateX(0); }
+}
