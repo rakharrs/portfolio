@@ -1,12 +1,11 @@
 
 
 import React from "react";
-import { Gamepad2, Rocket, Code2, Coffee, Boxes, Cylinder, BrainCircuit, CircuitBoardIcon } from "lucide-react";
+import { Gamepad2, Rocket, Code2, Coffee, Boxes, Cylinder } from "lucide-react";
 import DecryptedText from "./effects/DecryptedText";
 import { Separator } from "./ui/separator";
 import TextType from "./effects/TextType";
-import HeroButton from "./HeroButton";
-import TargetCursor from "./effects/TargetCursor";
+import HeroWrapper from "./HeroWrapper";
 
 const skills = [
     { label: "Full-Stack Dev", icon: <Code2 className="h-3 w-3" /> },
@@ -21,22 +20,12 @@ const skills = [
     { label: "Linux - Windows - MacOS", icon: null },
 ];
 
+
 export const Hero: React.FC = () => {
     return (
-        <div className="no-touch relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden pt-16 text-center">
-            <TargetCursor
-
-                spinDuration={2}
-
-                hideDefaultCursor={true}
-
-                parallaxOn={true}
-
-            />
-            <div className="relative z-10 container flex flex-col items-center gap-8 px-4 md:px-6">
+        <>
+            <HeroWrapper>
                 <div className="space-y-6 max-w-3xl">
-
-                    {/* Main title */}
                     <h1 className="font-departure bg-gradient-to-r from-yellow-300 via-yellow-400 to-yellow-600 bg-clip-text text-4xl font-bold tracking-tighter text-transparent sm:text-5xl md:text-6xl lg:text-7xl">
                         <DecryptedText
                             text="Rodolphe Yoann"
@@ -46,8 +35,6 @@ export const Hero: React.FC = () => {
                     </h1>
 
                     <Separator className="mx-auto my-4 w-24 bg-yellow-500/60" />
-
-                    {/* Intro text */}
                     <div className="mx-auto max-w-[900px] text-gray-400 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
                         <TextType
                             loop={false}
@@ -97,11 +84,9 @@ export const Hero: React.FC = () => {
                             </div>
                         ))}
                     </div>
-
-                    <HeroButton />
-
                 </div>
-            </div>
-        </div>
+            </HeroWrapper>
+
+        </>
     );
 };

@@ -6,8 +6,8 @@ import { cn } from "@/lib/utils";
 export default function Home() {
   return (
     <>
+    
       <div className="dark max-h-screen bg-background font-sans antialiased selection:bg-primary selection:text-primary-foreground">
-
         <main className="flex-1">
           <Hero />
         </main>
