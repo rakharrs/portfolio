@@ -101,7 +101,7 @@ export const TransitionProvider: React.FC<Props> = ({ children }) => {
         ref={overlayRef}
         className="pointer-events-none fixed inset-0 z-50 flex opacity-0"
       >
-        {Array.from({ length: 7 }).map((_, index) => (
+        {Array.from({ length: 1 }).map((_, index) => (
           <div
             key={index}
             className="

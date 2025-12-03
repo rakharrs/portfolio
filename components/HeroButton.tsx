@@ -13,7 +13,7 @@ export default function HeroButton() {
     return (
         <>
             <div className="flex flex-col sm:flex-row gap-4 justify-center w-full">
-                <a href={"/spaceship"}>
+                <a href={"/game/spaceship"}>
                     <Button variant={"outline"} size="lg" className="cursor-target cursor-none text-white font-departure">
                         ▷ Play game ?
                     </Button>

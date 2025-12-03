@@ -41,8 +41,7 @@ export default function Spaceship({ gameOver, pause, hit, restartSignal }: { gam
 
     const [cooldownProgress, setCooldownProgress] = useState(1);
     const lastShotRef = useRef<number | null>(null);
-    const cooldownDuration = 2000; // ms (1 second between shots)
-    const [shotElapsed, setShotElapsed] = useState(0);
+    const cooldownDuration = 1000; // ms (1 second between shots)
 
     useEffect(() => {
         if (!rb.current) return;
@@ -259,26 +258,27 @@ export default function Spaceship({ gameOver, pause, hit, restartSignal }: { gam
                 <Thruster position={[0, -1.6, 0]} scale={1} />
             </RigidBody>
 
-            <RigidBody
-                ref={coolDownBarRef}
-                type="kinematicPosition"
-                position={[0, 0, 0]}
-            >
-                <Html
-
-                    position={[0, -7.25, 0]} // slightly under the ship, tweak to taste
-                    center
-                    transform
-                    distanceFactor={10} // adjust size relative to camera
+            {!gameOver &&
+                <RigidBody
+                    ref={coolDownBarRef}
+                    type="kinematicPosition"
+                    position={[0, 0, 0]}
                 >
-                    <div className=" px-2 py-1 rounded-full bg-black/70 border border-white/10 backdrop-blur-sm">
-                        <Progress
-                            className="w-10 h-2"
-                            value={cooldownProgress * 100}
-                        />
-                    </div>
-                </Html>
-            </RigidBody>
+                    <Html
+                        position={[0, -7.25, 0]} // slightly under the ship, tweak to taste
+                        center
+                        transform
+                        distanceFactor={10} // adjust size relative to camera
+                    >
+                        <div className="px-2 py-1 rounded-full bg-black/70 border border-white/10 backdrop-blur-sm">
+                            <Progress
+                                className="w-10 h-2"
+                                value={cooldownProgress * 100}
+                            />
+                        </div>
+                    </Html>
+                </RigidBody>
+            }
 
 
             {beams.map((beam) => (
