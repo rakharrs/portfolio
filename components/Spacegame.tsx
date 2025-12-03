@@ -3,7 +3,7 @@ import { OrthographicCamera, Stars, useGLTF } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { Physics } from "@react-three/rapier";
 import { Suspense, useEffect, useState } from "react";
-import { GameLoader } from "@/app/spaceship/GameLoader";
+import { GameLoader } from "@/app/game/spaceship/GameLoader";
 import { cn } from "@/lib/utils";
 import ShakeCamera from "./effects/CameraShake";
 import Spaceship from "./spacegame/entity/Spaceship";
