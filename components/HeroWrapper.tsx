@@ -4,8 +4,14 @@ import { cn } from "@/lib/utils";
 import TargetCursor from "./effects/TargetCursor";
 import { useState } from "react";
 import HeroButton from "./HeroButton";
+import { usePageTransition } from "./TransitionProvider";
 
 function GameMenuButton({ onExitClick }: { onExitClick: () => void }) {
+    const { startTransition } = usePageTransition();
+    const handleTypeGameClick = () => {
+        onExitClick();
+        startTransition("/game/typegame");
+    }
     const menuButtonClassName =
         "group inline-flex items-center justify-center gap-3 rounded-full border border-yellow-500/40 bg-black/60 px-14 py-8 text-2xl text-yellow-100/90 backdrop-blur-sm transition hover:border-yellow-400 hover:bg-yellow-500/10 hover:text-yellow-300 active:scale-95";
 
@@ -22,15 +28,15 @@ function GameMenuButton({ onExitClick }: { onExitClick: () => void }) {
                             Spaceship
                         </span>
                     </a>
-                    <a
-                        href="/game/typegame"
+                    <button
+                        onClick={handleTypeGameClick}
                         className={cn(menuButtonClassName, "relative top-20 cursor-none")}
                         style={{ transform: "rotate(20deg)" }}
                     >
                         <span className="font-departure text-5xl font-bold tracking-widest">
                             Type Game
                         </span>
-                    </a>
+                    </button>
                 </div>
 
                 <button
