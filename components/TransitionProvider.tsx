@@ -106,8 +106,7 @@ export const TransitionProvider: React.FC<Props> = ({ children }) => {
             key={index}
             className="
               slice flex-1
-              bg-gradient-to-b
-              from-yellow-50 via-white to-slate-100
+              bg-black
               dark:from-yellow-200 dark:via-slate-50 dark:to-slate-200
             "
           />
