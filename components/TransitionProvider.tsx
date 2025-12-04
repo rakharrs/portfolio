@@ -3,9 +3,10 @@
 import React, { createContext, useContext, useRef, useState, ReactNode, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import gsap from "gsap";
+import { cn } from "@/lib/utils";
 
 type TransitionContextValue = {
-  startTransition: (href: string) => void;
+  startTransition: (href: string, transitionBackground?: string) => void;
 };
 
 const TransitionContext = createContext<TransitionContextValue | null>(null);
@@ -26,6 +27,7 @@ export const TransitionProvider: React.FC<Props> = ({ children }) => {
   const router = useRouter();
   const pathname = usePathname();
   const [isAnimating, setIsAnimating] = useState(false);
+  const [backgroundTransition, setBackgroundTransition] = useState<string>("");
   const overlayRef = useRef<HTMLDivElement | null>(null);
 
   // Ensure overlay is hidden at the start
@@ -35,9 +37,10 @@ export const TransitionProvider: React.FC<Props> = ({ children }) => {
     }
   }, []);
 
-  const startTransition = (href: string) => {
+  const startTransition = (href: string, transitionBackground?: string) => {
     if (isAnimating) return;
     setIsAnimating(true);
+    setBackgroundTransition(transitionBackground || "bg-gradient-to-b from-yellow-50 via-white to-slate-100");
 
     const overlay = overlayRef.current;
     if (!overlay) {
@@ -104,11 +107,12 @@ export const TransitionProvider: React.FC<Props> = ({ children }) => {
         {Array.from({ length: 1 }).map((_, index) => (
           <div
             key={index}
-            className="
-              slice flex-1
-              bg-black
-              dark:from-yellow-200 dark:via-slate-50 dark:to-slate-200
-            "
+            className={
+              cn([
+                "slice flex-1",
+                backgroundTransition
+              ])
+            }
           />
         ))}
       </div>

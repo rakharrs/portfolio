@@ -10,7 +10,7 @@ function GameMenuButton({ onExitClick }: { onExitClick: () => void }) {
     const { startTransition } = usePageTransition();
     const handleTypeGameClick = () => {
         onExitClick();
-        startTransition("/game/typegame");
+        startTransition("/game/typegame", "bg-black");
     }
     const menuButtonClassName =
         "group inline-flex items-center justify-center gap-3 rounded-full border border-yellow-500/40 bg-black/60 px-14 py-8 text-2xl text-yellow-100/90 backdrop-blur-sm transition hover:border-yellow-400 hover:bg-yellow-500/10 hover:text-yellow-300 active:scale-95";
