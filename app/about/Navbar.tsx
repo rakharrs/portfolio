@@ -3,10 +3,17 @@ import React, { useState, useEffect } from 'react';
 import { Menu, X, Gamepad2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import { usePageTransition } from '@/components/TransitionProvider';
 
 const Navbar: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const { startTransition } = usePageTransition();
+
+  const handleTitleClick = () => {
+    startTransition("/","bg-black");
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -25,6 +32,7 @@ const Navbar: React.FC = () => {
   };
 
   const navLinks = [
+    { name: 'About', id: 'hero' },
     { name: 'Projects', id: 'projects' },
     { name: 'Experience', id: 'experience' },
     { name: 'Contact', id: 'contact' },
@@ -33,19 +41,19 @@ const Navbar: React.FC = () => {
   return (
     <nav
       className={cn(
-        "font-departure fixed top-0 left-0 right-0 z-50 transition-all duration-300",
+        "font-departure fixed top-0 left-0 right-0 z-45 transition-all duration-300",
         isScrolled
           ? "bg-white/80 backdrop-blur-md border-b border-gray-100 py-3"
           : "bg-transparent py-6"
       )}
     >
       <div className="container mx-auto px-6 flex items-center justify-between">
-        <div 
-          onClick={() => scrollToSection('hero')}
+        <div
+          onClick={() => handleTitleClick()}
           className="flex items-center gap-2 cursor-pointer group"
         >
           <div className="p-2 bg-black rounded-lg group-hover:bg-gray-800 transition-colors">
-             {/* <Gamepad2 className="text-white w-5 h-5" /> */}
+            {/* <Gamepad2 className="text-white w-5 h-5" /> */}
           </div>
           <span className="text-xl font-bold font-mono tracking-tighter text-black">
             Rodolphe<span className="text-gray-500"> Yoann</span>
