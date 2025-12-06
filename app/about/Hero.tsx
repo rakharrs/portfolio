@@ -1,7 +1,7 @@
 "use client";
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ChevronDown, ArrowRight, Atom, Coffee, Database, Terminal } from 'lucide-react';
+import { ChevronDown, Atom, Coffee, Database, Terminal, ArrowDown } from 'lucide-react';
 import Image from 'next/image';
 
 const Hero: React.FC = () => {
@@ -37,17 +37,10 @@ const Hero: React.FC = () => {
             {/* CTA Buttons */}
             <div className="font-departure flex flex-wrap gap-4">
               <button 
-                onClick={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })}
                 className="px-8 py-4 bg-primary text-primary-foreground rounded-full font-bold hover:bg-primary/90 transition-all flex items-center gap-2 group shadow-lg shadow-black/5"
               >
-                View Work
-                <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-              </button>
-              <button 
-                onClick={() => document.getElementById('experience')?.scrollIntoView({ behavior: 'smooth' })}
-                className="px-8 py-4 bg-background border border-border text-foreground rounded-full font-bold hover:bg-secondary transition-colors"
-              >
-                About Me
+                Download Resume
+                <ArrowDown size={18} className="group-hover:translate-x-1 transition-transform" />
               </button>
             </div>
           </motion.div>
