@@ -42,6 +42,12 @@ const Hero: React.FC = () => {
                 Download Resume
                 <ArrowDown size={18} className="group-hover:translate-x-1 transition-transform" />
               </button>
+              <button 
+                onClick={() => document.getElementById('experience')?.scrollIntoView({ behavior: 'smooth' })}
+                className="px-8 py-4 bg-background border border-border text-foreground rounded-full font-bold hover:bg-secondary transition-colors"
+              >
+                About Me
+              </button>
             </div>
           </motion.div>
         </div>
