@@ -63,7 +63,7 @@ const Hero: React.FC = () => {
             {/* Main Image Container */}
             <div className="absolute inset-0 bg-gray-100 rounded-[2.5rem] rotate-3 overflow-hidden border border-white shadow-2xl">
                 <Image 
-                  src="/images/moi.jpg" 
+                  src="/images/portrait.jpg" 
                   alt="Developer Portrait" 
                   className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
                   fill
