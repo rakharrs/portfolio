@@ -39,8 +39,8 @@ const Hero: React.FC = () => {
               <button 
                 className="px-8 py-4 bg-primary text-primary-foreground rounded-full font-bold hover:bg-primary/90 transition-all flex items-center gap-2 group shadow-lg shadow-black/5"
               >
-                Download Resume
-                <ArrowDown size={18} className="group-hover:translate-x-1 transition-transform" />
+                This portfolio is still in progress
+                {/* <ArrowDown size={18} className="group-hover:translate-x-1 transition-transform" /> */}
               </button>
               <button 
                 onClick={() => document.getElementById('experience')?.scrollIntoView({ behavior: 'smooth' })}
