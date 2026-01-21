@@ -54,13 +54,14 @@ const Hero: React.FC = () => {
 
         {/* Right Column: Image & Floating Icons */}
         <div className="w-full md:w-1/2 relative flex justify-center md:justify-end mt-12 md:mt-0">
+        {/*
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8 }}
             className="relative w-[300px] h-[300px] md:w-[500px] md:h-[500px]"
           >
-            {/* Main Image Container */}
+            
             <div className="absolute inset-0 bg-gray-100 rounded-[2.5rem] rotate-3 overflow-hidden border border-white shadow-2xl">
                 <Image 
                   src="/images/portrait.jpg" 
@@ -70,12 +71,9 @@ const Hero: React.FC = () => {
                 />
             </div>
             
-            {/* Decorative Outline behind */}
+            
             <div className="absolute inset-0 border-2 border-gray-200 rounded-[2.5rem] -rotate-3 -z-10 bg-white/50" />
 
-            {/* Floating Tech Icons */}
-            
-            {/* React Icon (Atom) */}
             <motion.div 
               className="absolute -top-8 -left-8 md:-left-12 p-4 bg-white rounded-2xl shadow-xl border border-gray-100/50"
               animate={{ y: [0, -15, 0] }}
@@ -85,7 +83,7 @@ const Hero: React.FC = () => {
               <Atom size={42} className="text-gray-400" strokeWidth={1.5} />
             </motion.div>
 
-            {/* Java Icon (Coffee) */}
+            
             <motion.div 
               className="absolute top-1/2 -right-8 md:-right-12 p-4 bg-white rounded-2xl shadow-xl border border-gray-100/50"
               animate={{ y: [0, 15, 0] }}
@@ -95,7 +93,7 @@ const Hero: React.FC = () => {
               <Coffee size={42} className="text-gray-400" strokeWidth={1.5} />
             </motion.div>
 
-            {/* Backend/Laravel Icon (Database) */}
+            
             <motion.div 
               className="absolute -bottom-8 left-8 md:left-12 p-4 bg-white rounded-2xl shadow-xl border border-gray-100/50"
               animate={{ y: [0, -10, 0] }}
@@ -105,7 +103,7 @@ const Hero: React.FC = () => {
               <Database size={36} className="text-gray-400" strokeWidth={1.5} />
             </motion.div>
 
-            {/* Python/Scripting Icon (Terminal) */}
+            
              <motion.div 
               className="absolute top-0 right-4 md:right-0 p-3 bg-white rounded-xl shadow-lg border border-gray-100/50"
               animate={{ y: [0, 10, 0] }}
@@ -116,6 +114,7 @@ const Hero: React.FC = () => {
             </motion.div>
 
           </motion.div>
+         */}
         </div>
       </div>
 
