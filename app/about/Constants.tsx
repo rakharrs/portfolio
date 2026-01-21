@@ -33,19 +33,10 @@ export const PROJECTS: Project[] = [
     title: 'Merana Framework',
     description: 'A lightweight custom-built web framework designed for speed. Features a proprietary ORM for database management, built-in RESTful API handling, and a ModelView engine for direct HTTP page rendering.',
     tags: ['Java', 'Web Framework', 'ORM', 'MVC', 'REST'],
-    image: '',
+    image: '/',
     link: '#',
     github: '#',
   },
-  {
-    id: '3',
-    title: 'Estate Management system (ERP)',
-    description: 'A comprehensive real estate management solution. Handles lease contracts (Contrat de bail), security deposits (Dépôt de garantie), tenant management, premises tracking, and overall real estate assets (Patrimoine Immobilier).',
-    tags: ['Java', 'React', 'Enterprise', 'SQL', 'Management'],
-    image: '/images/photo-immo.jpg',
-    link: '#',
-    github: '#',
-  }
 ];
 
 export const EXPERIENCE: Experience[] = [
@@ -60,21 +51,21 @@ export const EXPERIENCE: Experience[] = [
   },
   {
     id: '2',
-    role: 'License in Computer Science',
-    company: 'IT-University',
-    period: '2022 - 2025',
-    description: 'Graduated with honors, focusing on software engineering, data structures, and algorithms. Completed a thesis on a hotel & restaurant management system with floor map visualization to manage bookings and services.',
-    skills: ['Object oriented programming', 'Web development', 'Database management', 'Data structure', 'Algorithms', 'Optimisation', 'Machine learning'],
-    type: 'education'
-  },
-  {
-    id: '3',
     role: 'Assistant digital factory',
     company: 'Orange Madagascar',
     period: '2024',
     description: 'Developed microservices using Quarkus framework in collaboration with cross-functional teams. Creation of a web application to manage the api. Implemented a program that automates the database update by fetching data from an excel file and updating the sql database accordingly.',
     skills: ['Java', 'Quarkus', 'MySQL', 'React', 'RESTful APIs', 'ELK', 'git'],
     type: 'work'
+  },
+  {
+    id: '3',
+    role: 'License in Computer Science',
+    company: 'IT-University',
+    period: '2022 - 2025',
+    description: 'Graduated with honors, focusing on software engineering, data structures, and algorithms. Completed a thesis on a hotel & restaurant management system with floor map visualization to manage bookings and services.',
+    skills: ['Object oriented programming', 'Web development', 'Database management', 'Data structure', 'Algorithms', 'Optimisation', 'Machine learning'],
+    type: 'education'
   },
   {
     id: '4',
