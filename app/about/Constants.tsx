@@ -29,6 +29,21 @@ export interface Experience {
 
 export const PROJECTS: Project[] = [
   {
+    id: 'arise',
+    category: 'professional',
+    title: 'A-rise Madagascar website',
+    role: 'Web developer - service provider',
+    description:
+      'A showcase website for A-rise Madagascar.',
+    stack: ['NextJS', 'Shadcn/ui', 'Tailwindcss', 'Framer motion'],
+    media: [
+      { src: '/images/arise-1.png', caption: 'A-rise Madagascar website' },
+      { src: '/images/arise-2.png', caption: 'A-rise Madagascar website' },
+      { src: '/images/arise-3.png', caption: 'A-rise Madagascar website' },
+    ],
+    link: 'https://www.arise-mg.com/',
+  },
+  {
     id: 'chess',
     category: 'academic',
     title: 'Chess',
@@ -61,7 +76,7 @@ export const PROJECTS: Project[] = [
       { src: '/images/resa-system.png', caption: 'Restaurant reservation system' },
       { src: '/images/disposition-table.png', caption: 'Restaurant table disposition' },
     ],
-    link: '#',
+    // link: '#',
   },
   {
     id: 'merana',
