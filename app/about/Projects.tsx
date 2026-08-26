@@ -55,7 +55,7 @@ const Projects: React.FC = () => {
                   <div className="about-project-title">{project.title}</div>
                   <div className="about-project-meta">{project.role}</div>
                 </div>
-                <span className="about-badge">{project.category}</span>
+                {/* <span className="about-badge">{project.category}</span> */}
               </div>
 
               <div className="about-gallery">

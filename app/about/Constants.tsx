@@ -28,6 +28,21 @@ export interface Experience {
 }
 
 export const PROJECTS: Project[] = [
+    {
+    id: 'stardodger',
+    category: 'academic',
+    title: 'Stardodger',
+    role: 'Personal project',
+    description:
+      "A video game where the player's goal is to dodge as many meteorites as possible; the difficulty increases as the game progresses.",
+    stack: ['React', "three.js", 'react-three'],
+    media: [
+      { src: '/images/stardodger-1.png', caption: 'Stardodger screenshot 1' },
+      { src: '/images/stardodger-2.png', caption: 'Stardodger screenshot 2' },
+      { src: '/images/stardodger-3.png', caption: 'Stardodger screenshot 3' },
+    ],
+    link: '/game/spaceship',
+  },
   {
     id: 'arise',
     category: 'professional',
