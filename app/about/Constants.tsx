@@ -1,11 +1,20 @@
+export interface ProjectMedia {
+  src: string;
+  caption: string;
+  type?: 'image' | 'video';
+  poster?: string;
+}
+
 export interface Project {
   id: string;
+  category: 'academic' | 'professional';
   title: string;
+  role: string;
   description: string;
-  tags: string[];
-  image: string;
-  link: string;
-  github: string;
+  stack: string[];
+  media: ProjectMedia[];
+  link?: string;
+  github?: string;
 }
 
 export interface Experience {
@@ -19,23 +28,85 @@ export interface Experience {
 }
 
 export const PROJECTS: Project[] = [
-  {
-    id: '1',
-    title: 'Chess',
-    description: 'A multiplayer chess game. It features rendering powered by LWJGL and OpenGL and also a version made with Java Swing, and real-time local multiplayer capabilities using Java Sockets.',
-    tags: ['Java', 'LWJGL', 'OpenGL', 'Swing', 'Sockets'],
-    image: '/images/photo-chess.jpg',
-    link: '#',
-    github: '#',
+    {
+    id: 'stardodger',
+    category: 'academic',
+    title: 'Stardodger',
+    role: 'Personal project',
+    description:
+      "A video game where the player's goal is to dodge as many meteorites as possible; the difficulty increases as the game progresses.",
+    stack: ['React', "three.js", 'react-three'],
+    media: [
+      { src: '/images/stardodger-1.png', caption: 'Stardodger screenshot 1' },
+      { src: '/images/stardodger-2.png', caption: 'Stardodger screenshot 2' },
+      { src: '/images/stardodger-3.png', caption: 'Stardodger screenshot 3' },
+    ],
+    link: '/game/spaceship',
   },
   {
-    id: '2',
+    id: 'arise',
+    category: 'professional',
+    title: 'A-rise Madagascar website',
+    role: 'Web developer - service provider',
+    description:
+      'A showcase website for A-rise Madagascar.',
+    stack: ['NextJS', 'Shadcn/ui', 'Tailwindcss', 'Framer motion'],
+    media: [
+      { src: '/images/arise-1.png', caption: 'A-rise Madagascar website' },
+      { src: '/images/arise-2.png', caption: 'A-rise Madagascar website' },
+      { src: '/images/arise-3.png', caption: 'A-rise Madagascar website' },
+    ],
+    link: 'https://www.arise-mg.com/',
+  },
+  {
+    id: 'chess',
+    category: 'academic',
+    title: 'Chess',
+    role: 'Personal project',
+    description:
+      'A multiplayer chess game rendered with LWJGL and OpenGL, with a secondary Java Swing build. Real-time local multiplayer runs over raw Java Sockets, handling move validation, turn state and board sync between two clients.',
+    stack: ['Java', 'LWJGL', 'OpenGL', 'Swing', 'Sockets'],
+    media: [
+      { src: '/images/chess-screen.png', caption: 'Java Swing interface' },
+      { src: '/images/chess-multiplayer.png', caption: 'Board & piece rendering' },
+      { src: '/images/chess-multiplayer-screen.png', caption: 'Chess multiplayer screen' },
+    ],
+    github: 'https://github.com/rakharrs/simple-chess',
+  },
+  {
+    id: 'hotel',
+    category: 'professional',
+    title: 'Hotel & Restaurant Management Platform',
+    role: 'Full Stack Developer — Aro Immobilier . SA',
+    description:
+      'A web application for a hotel-restaurant covering bookings, tenant tracking and asset oversight. Its standout piece is a table reservation module built with D3.js: an interactive floor map where staff place tables, check availability and confirm reservations visually instead of through a plain form.',
+    stack: ['Java', 'Spring Boot', 'React', 'D3.js', 'PostgreSQL', 'Docker'],
+    media: [
+      {
+        src: '/videos/hotel-reservation-demo.mp4',
+        poster: '/images/resa-system.png',
+        type: 'video',
+        caption: 'Restaurant floor map & table reservation (D3.js)',
+      },
+      { src: '/images/resa-system.png', caption: 'Restaurant reservation system' },
+      { src: '/images/disposition-table.png', caption: 'Restaurant table disposition' },
+    ],
+    // link: '#',
+  },
+  {
+    id: 'merana',
+    category: 'academic',
     title: 'Merana Framework',
-    description: 'A lightweight custom-built web framework designed for speed. Features a proprietary ORM for database management, built-in RESTful API handling, and a ModelView engine for direct HTTP page rendering.',
-    tags: ['Java', 'Web Framework', 'ORM', 'MVC', 'REST'],
-    image: '/',
-    link: '#',
-    github: '#',
+    role: 'Personal project',
+    description:
+      'A lightweight custom-built Java web framework designed for speed. Ships with a proprietary ORM for database access, built-in RESTful API handling, and a ModelView engine that renders pages directly from HTTP requests without external dependencies.',
+    stack: ['Java', 'Web Framework', 'ORM', 'MVC', 'REST'],
+    media: [
+      // { src: '/images/merana-1.jpg', caption: 'Custom ORM query builder' },
+      // { src: '/images/merana-2.jpg', caption: 'REST endpoint routing' },
+      // { src: '/images/merana-3.jpg', caption: 'ModelView page rendering engine' },
+    ],
+    github: 'https://github.com/rakharrs/merana',
   },
 ];
 
@@ -45,12 +116,39 @@ export const EXPERIENCE: Experience[] = [
     role: 'Full Stack Developer (Internship - service provider)',
     company: 'Aro Immobilier . SA',
     period: '2024 - 2025',
-    description: 'Making a web application for an hotel-restaurant. Developed a comprehensive real estate management system (ERP) to streamline property operations. Implemented features for lease contract management, tenant tracking, and asset oversight using a Spring-boot framework and React.',
+    description: 'Making a web application for an hotel-restaurant. Developed a real estate management system (ERP) for property operations. Implemented features for lease contract management, tenant tracking, and asset oversight.',
     skills: ['Java', 'Spring-boot', 'PostgreSQL', 'React', 'RESTful APIs', 'Docker', 'git'],
     type: 'work'
   },
-  {
+    {
     id: '2',
+    role: "English Advanced 1 Certificate",
+    company: 'English Teaching Program',
+    period: '2026',
+    description: 'English language proficiency certificate.',
+    skills: ['English writing', 'reading', 'listening', 'speaking'],
+    type: 'education'
+  },
+  {
+    id: '3',
+    role: "Diplôme d'Études en Langue Française - DELF B2",
+    company: 'Alliance Française Antananarivo',
+    period: '2025',
+    description: 'French language proficiency diploma.',
+    skills: ['French writing', 'reading', 'listening', 'speaking'],
+    type: 'education'
+  },
+  {
+    id: '4',
+    role: 'License in Computer Science',
+    company: 'IT-University',
+    period: '2025',
+    description: 'Graduated with honors, focusing on software engineering, data structures, and algorithms. Completed a thesis on a hotel & restaurant management system with floor map visualization to manage bookings and services.',
+    skills: ['Object oriented programming', 'Web development', 'Database management', 'Data structure', 'Algorithms', 'Optimisation', 'Machine learning'],
+    type: 'education'
+  },
+  {
+    id: '5',
     role: 'Assistant digital factory',
     company: 'Orange Madagascar',
     period: '2024',
@@ -59,16 +157,7 @@ export const EXPERIENCE: Experience[] = [
     type: 'work'
   },
   {
-    id: '3',
-    role: 'License in Computer Science',
-    company: 'IT-University',
-    period: '2022 - 2025',
-    description: 'Graduated with honors, focusing on software engineering, data structures, and algorithms. Completed a thesis on a hotel & restaurant management system with floor map visualization to manage bookings and services.',
-    skills: ['Object oriented programming', 'Web development', 'Database management', 'Data structure', 'Algorithms', 'Optimisation', 'Machine learning'],
-    type: 'education'
-  },
-  {
-    id: '4',
+    id: '6',
     role: 'Baccalauréat scientifique',
     company: 'ESCA Antanimena',
     period: '2021',

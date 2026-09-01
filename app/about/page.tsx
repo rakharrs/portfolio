@@ -1,3 +1,4 @@
+import "./legacy.css";
 import Experience from "./Experience";
 import Footer from "./Footer";
 import Hero from "./Hero";
@@ -7,11 +8,13 @@ import Projects from "./Projects";
 
 export default function AboutPage() {
   return (
-    <main className="min-h-screen bg-background text-foreground font-sans selection:bg-primary/30">
+    <main className="about-page min-h-screen">
       <Navbar />
-      <Hero />
-      <Projects />
-      <Experience />
+      <div className="about-main">
+        <Hero />
+        <Projects />
+        <Experience />
+      </div>
       <Footer />
     </main>
   );
