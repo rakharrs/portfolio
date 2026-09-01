@@ -73,7 +73,7 @@ export const PROJECTS: Project[] = [
     role: 'Personal project',
     period: '2024',
     description:
-      'A lightweight custom-built Java web framework designed for speed. Ships with a proprietary ORM for database access, built-in RESTful API handling, and a ModelView engine that renders pages directly from HTTP requests without external dependencies.',
+      'A lightweight custom-built Java web framework with built-in RESTful API handling, and a ModelView engine that renders pages directly from HTTP requests without external dependencies.',
     stack: ['Java', 'Web Framework', 'ORM', 'MVC', 'REST'],
     media: [
       { src: '/images/merana-1.jpg', caption: 'Custom ORM query builder' },
