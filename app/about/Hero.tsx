@@ -1,4 +1,5 @@
 "use client";
+import Link from 'next/link';
 import React from 'react';
 
 // const STATS = [
@@ -29,12 +30,9 @@ const Hero: React.FC = () => {
         >
           View Projects
         </button>
-        <button
-          onClick={() => document.getElementById('experience')?.scrollIntoView({ behavior: 'smooth' })}
-          className="about-btn about-btn-secondary"
-        >
-          Journey
-        </button>
+        <Link href="/files/CV-RODOLPHE.pdf" target="_blank" className="about-btn about-btn-secondary">
+          My Resume
+        </Link>
       </div>
 
       {/* <div className="about-stats-grid">

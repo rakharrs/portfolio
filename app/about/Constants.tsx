@@ -10,7 +10,6 @@ export interface Project {
   category: 'academic' | 'professional';
   title: string;
   role: string;
-  period: string;
   description: string;
   stack: string[];
   media: ProjectMedia[];
@@ -29,12 +28,41 @@ export interface Experience {
 }
 
 export const PROJECTS: Project[] = [
+    {
+    id: 'stardodger',
+    category: 'academic',
+    title: 'Stardodger',
+    role: 'Personal project',
+    description:
+      "A video game where the player's goal is to dodge as many meteorites as possible; the difficulty increases as the game progresses.",
+    stack: ['React', "three.js", 'react-three'],
+    media: [
+      { src: '/images/stardodger-1.png', caption: 'Stardodger screenshot 1' },
+      { src: '/images/stardodger-2.png', caption: 'Stardodger screenshot 2' },
+      { src: '/images/stardodger-3.png', caption: 'Stardodger screenshot 3' },
+    ],
+    link: '/game/spaceship',
+  },
+  {
+    id: 'arise',
+    category: 'professional',
+    title: 'A-rise Madagascar website',
+    role: 'Web developer - service provider',
+    description:
+      'A showcase website for A-rise Madagascar.',
+    stack: ['NextJS', 'Shadcn/ui', 'Tailwindcss', 'Framer motion'],
+    media: [
+      { src: '/images/arise-1.png', caption: 'A-rise Madagascar website' },
+      { src: '/images/arise-2.png', caption: 'A-rise Madagascar website' },
+      { src: '/images/arise-3.png', caption: 'A-rise Madagascar website' },
+    ],
+    link: 'https://www.arise-mg.com/',
+  },
   {
     id: 'chess',
     category: 'academic',
     title: 'Chess',
     role: 'Personal project',
-    period: '2022',
     description:
       'A multiplayer chess game rendered with LWJGL and OpenGL, with a secondary Java Swing build. Real-time local multiplayer runs over raw Java Sockets, handling move validation, turn state and board sync between two clients.',
     stack: ['Java', 'LWJGL', 'OpenGL', 'Swing', 'Sockets'],
@@ -50,7 +78,6 @@ export const PROJECTS: Project[] = [
     category: 'professional',
     title: 'Hotel & Restaurant Management Platform',
     role: 'Full Stack Developer — Aro Immobilier . SA',
-    period: '2024 - 2025',
     description:
       'A web application for a hotel-restaurant with a table reservation module built with D3.js: an interactive floor map where staff place tables, check availability and confirm reservations visually instead of through a plain form.',
     stack: ['Java', 'Spring Boot', 'React', 'D3.js', 'PostgreSQL', 'Docker'],
@@ -64,23 +91,22 @@ export const PROJECTS: Project[] = [
       { src: '/images/resa-system.png', caption: 'Restaurant reservation system' },
       { src: '/images/disposition-table.png', caption: 'Restaurant table disposition' },
     ],
-    link: '#',
+    // link: '#',
   },
   {
     id: 'merana',
     category: 'academic',
     title: 'Merana Framework',
     role: 'Personal project',
-    period: '2024',
     description:
       'A lightweight custom-built Java web framework with built-in RESTful API handling, and a ModelView engine that renders pages directly from HTTP requests without external dependencies.',
     stack: ['Java', 'Web Framework', 'ORM', 'MVC', 'REST'],
     media: [
-      { src: '/images/merana-1.jpg', caption: 'Custom ORM query builder' },
-      { src: '/images/merana-2.jpg', caption: 'REST endpoint routing' },
-      { src: '/images/merana-3.jpg', caption: 'ModelView page rendering engine' },
+      // { src: '/images/merana-1.jpg', caption: 'Custom ORM query builder' },
+      // { src: '/images/merana-2.jpg', caption: 'REST endpoint routing' },
+      // { src: '/images/merana-3.jpg', caption: 'ModelView page rendering engine' },
     ],
-    github: '#',
+    github: 'https://github.com/rakharrs/merana',
   },
 ];
 
@@ -90,21 +116,30 @@ export const EXPERIENCE: Experience[] = [
     role: 'Full Stack Developer (Internship - service provider)',
     company: 'Aro Immobilier . SA',
     period: '2024 - 2025',
-    description: 'Making a web application for an hotel-restaurant. Developed a comprehensive real estate management system (ERP) to streamline property operations. Implemented features for lease contract management, tenant tracking, and asset oversight using a Spring-boot framework and React.',
+    description: 'Making a web application for an hotel-restaurant. Developed a real estate management system (ERP) for property operations. Implemented features for lease contract management, tenant tracking, and asset oversight.',
     skills: ['Java', 'Spring-boot', 'PostgreSQL', 'React', 'RESTful APIs', 'Docker', 'git'],
     type: 'work'
   },
-  {
+    {
     id: '2',
-    role: 'Assistant digital factory',
-    company: 'Orange Madagascar',
-    period: '2024',
-    description: 'Developed microservices using Quarkus framework in collaboration with cross-functional teams. Creation of a web application to manage the api. Implemented a program that automates the database update by fetching data from an excel file and updating the sql database accordingly.',
-    skills: ['Java', 'Quarkus', 'MySQL', 'React', 'RESTful APIs', 'ELK', 'git'],
-    type: 'work'
+    role: "English Advanced 1 Certificate",
+    company: 'English Teaching Program',
+    period: '2026',
+    description: 'English language proficiency certificate.',
+    skills: ['English writing', 'reading', 'listening', 'speaking'],
+    type: 'education'
   },
   {
     id: '3',
+    role: "Diplôme d'Études en Langue Française - DELF B2",
+    company: 'Alliance Française Antananarivo',
+    period: '2025',
+    description: 'French language proficiency diploma.',
+    skills: ['French writing', 'reading', 'listening', 'speaking'],
+    type: 'education'
+  },
+  {
+    id: '4',
     role: 'License in Computer Science',
     company: 'IT-University',
     period: '2025',
@@ -113,7 +148,16 @@ export const EXPERIENCE: Experience[] = [
     type: 'education'
   },
   {
-    id: '4',
+    id: '5',
+    role: 'Assistant digital factory',
+    company: 'Orange Madagascar',
+    period: '2024',
+    description: 'Developed microservices using Quarkus framework in collaboration with cross-functional teams. Creation of a web application to manage the api. Implemented a program that automates the database update by fetching data from an excel file and updating the sql database accordingly.',
+    skills: ['Java', 'Quarkus', 'MySQL', 'React', 'RESTful APIs', 'ELK', 'git'],
+    type: 'work'
+  },
+  {
+    id: '6',
     role: 'Baccalauréat scientifique',
     company: 'ESCA Antanimena',
     period: '2021',

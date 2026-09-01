@@ -273,6 +273,48 @@
   width: 22px;
 }
 
+/* Tabs */
+
+.about-tabs {
+  display: flex;
+  margin-bottom: 22px;
+  border-bottom: 1px solid var(--a-border);
+  flex-wrap: wrap;
+  gap: 4px 4px;
+}
+
+.about-tab-button {
+  background: var(--a-bg);
+  border: 1px solid var(--a-border);
+  border-bottom: none;
+  padding: 9px 16px;
+  font-size: 13px;
+  font-weight: bold;
+  cursor: pointer;
+  color: var(--a-muted);
+}
+
+.about-tab-button:hover {
+  background: var(--a-accent-light);
+}
+
+.about-tab-button.active {
+  background: #fff;
+  color: var(--a-text);
+  position: relative;
+  top: 1px;
+}
+
+.about-tab-count {
+  font-size: 11px;
+  color: #a3a3a1;
+  margin-left: 6px;
+}
+
+.about-tab-button.active .about-tab-count {
+  color: var(--a-gold-dark);
+}
+
 /* Badges / tags */
 
 .about-badge {
@@ -637,5 +679,14 @@
   .about-carousel-controls {
     justify-content: center;
     text-align: center;
+  }
+
+  .about-tabs {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+  }
+
+  .about-tab-button {
+    white-space: nowrap;
   }
 }
