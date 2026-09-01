@@ -52,7 +52,7 @@ export const PROJECTS: Project[] = [
     role: 'Full Stack Developer — Aro Immobilier . SA',
     period: '2024 - 2025',
     description:
-      'A web application for a hotel-restaurant covering bookings, tenant tracking and asset oversight. Its standout piece is a table reservation module built with D3.js: an interactive floor map where staff place tables, check availability and confirm reservations visually instead of through a plain form.',
+      'A web application for a hotel-restaurant with a table reservation module built with D3.js: an interactive floor map where staff place tables, check availability and confirm reservations visually instead of through a plain form.',
     stack: ['Java', 'Spring Boot', 'React', 'D3.js', 'PostgreSQL', 'Docker'],
     media: [
       {
